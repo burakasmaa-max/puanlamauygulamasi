@@ -153,10 +153,8 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 </nav>
 <div class="statusbar" id="statusBar"></div>
 
-<!-- ════════════════ PUANLAYICI ════════════════ -->
 <div class="view active" id="view-scorer">
 
-  <!-- 1. Giriş — sadece bir kere -->
   <div id="scorerLoginScreen">
     <div class="card">
       <div class="card-title">Hoş geldiniz</div>
@@ -168,10 +166,8 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
     </div>
   </div>
 
-  <!-- 2. Ana ekran (giriş sonrası kalıcı) -->
   <div id="scorerMainScreen" style="display:none">
 
-    <!-- Bekleme durumu -->
     <div class="card" id="scorerWaitCard">
       <div class="waiting-screen">
         <div class="big-icon">⏳</div>
@@ -181,7 +177,6 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
       </div>
     </div>
 
-    <!-- Aktif oturum — puanlama -->
     <div class="card" id="scorerActiveCard" style="display:none">
       <div class="sbadge"><div class="dot" id="scoreDot"></div><span id="scoreBadgeTxt">Oturum açık</span></div>
       <div class="card-title" id="scorerSpeakerTitle">—</div>
@@ -209,7 +204,6 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
   </div>
 </div>
 
-<!-- ════════════════ ÖĞRETMEN ════════════════ -->
 <div class="view" id="view-teacher">
 
   <div class="card" id="teacherLoginCard">
@@ -222,12 +216,10 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 
   <div id="teacherPanel" style="display:none">
 
-    <!-- Öğrenci Listesi & Oturum Yönetimi -->
     <div class="card">
       <div class="card-title">Oturum Yönetimi</div>
       <div class="card-sub">Konuşacak adayı seçip oturumu açın. Bitince kapatın, rapor otomatik gelir.</div>
 
-      <!-- Yeni öğrenci ekle -->
       <div style="display:flex;gap:.5rem;margin-bottom:1rem">
         <input type="text" id="newStudentName" placeholder="Aday adı soyadı ekle…" style="margin-bottom:0;flex:1" onkeydown="if(event.key==='Enter')addStudent()"/>
         <button class="btn btn-outline btn-sm" onclick="addStudent()" style="width:auto;white-space:nowrap">+ Ekle</button>
@@ -238,7 +230,6 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
       </div>
     </div>
 
-    <!-- Aktif oturum bilgisi -->
     <div class="card" id="activeSessionInfo" style="display:none">
       <div class="sbadge"><div class="dot" id="teacherDot"></div><span id="teacherBadgeTxt">Oturum aktif</span></div>
       <div class="card-title" id="activeSessionSpeaker">—</div>
@@ -246,7 +237,6 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
       <button class="btn btn-danger" id="closeBtn" onclick="closeSession()">■ Oturumu Kapat ve Raporu Göster</button>
     </div>
 
-    <!-- Rapor -->
     <div class="card" id="reportCard" style="display:none">
       <div class="card-title">📊 Puanlama Raporu</div>
       <div class="card-sub" id="reportSpeaker"></div>
@@ -262,14 +252,12 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
       <button class="btn btn-outline" onclick="copyReport()">📋 Raporu Kopyala</button>
     </div>
 
-    <!-- Geçmiş -->
     <div class="card">
       <div class="card-title">Geçmiş Oturumlar</div>
       <div class="card-sub">Tamamlanan tüm puanlama oturumları.</div>
       <div id="historyList"><div class="waiting-msg">Yükleniyor<span class="dots"></span></div></div>
     </div>
 
-    <!-- Geçmiş Detay -->
     <div class="card" id="histDetailCard" style="display:none">
       <button class="btn btn-outline" style="margin-bottom:1rem" onclick="closeHistDetail()">← Geri</button>
       <div class="card-title" id="hdTitle"></div>
@@ -294,9 +282,9 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 <script>
 // ══════════════════════════════════════════════════
 // CONFIG
-// Netlify proxy üzerinden gider → CORS sorunu olmaz
+// Yeni Google Apps Script (GAS) API Bağlantısı
 // ══════════════════════════════════════════════════
-const API = "/api/gas";   // Netlify _redirects proxy
+const API = "https://script.google.com/macros/s/AKfycbxBizcOb_8Uk04h7UYtnmGWeKchIhk5gTRHcLJsPT6FcqbDrBOeO_RSHz7mHzRSINMi/exec";
 const TEACHER_PASS = "ogretmen2024";
 
 // ══ STATE ══
@@ -307,8 +295,9 @@ let scorerPollId  = null;
 let teacherPollId = null;
 let lastReport    = null;
 let lastHistItem  = null;
-let students      = JSON.parse(localStorage.getItem("studentList") || "[]");
+let students      = []; // Yerel depolama iptal edildi, sunucudan çekilecek.
 let activeStudentIdx = -1;
+const teacherLoggedIn = localStorage.getItem("teacherLoggedIn") === "true";
 
 // ══ UTILS ══
 function showToast(msg, ms=2800){
@@ -327,12 +316,18 @@ function setStatusBar(state,text){
   if(!state){sb.className='statusbar';return;}
   sb.className='statusbar visible '+state; sb.textContent=text;
 }
+
+// FETCH API (GÜNCELLENDİ)
 async function api(params){
-  const qs=Object.keys(params).map(k=>encodeURIComponent(k)+'='+encodeURIComponent(params[k])).join('&');
-  const res=await fetch(API+'?'+qs,{redirect:'follow'});
-  if(!res.ok) throw new Error('HTTP '+res.status);
+  const qs = new URLSearchParams(params).toString();
+  const res = await fetch(API + '?' + qs, {
+    method: 'GET',
+    mode: 'cors'
+  });
+  if(!res.ok) throw new Error('HTTP ' + res.status);
   return res.json();
 }
+
 function updateSlider(v){
   const el=document.getElementById('scoreDisplay');
   if(!el) return;
@@ -344,13 +339,11 @@ function updateSlider(v){
 // ══ SCORER INIT ══════════════════════════════════
 function initScorer(){
   if(myName){
-    // Daha önce giriş yapmış
     document.getElementById('scorerLoginScreen').style.display='none';
     document.getElementById('scorerMainScreen').style.display='block';
     document.getElementById('scorerWelcomeName').textContent='Hoş geldin, '+myName+' 👋';
     startScorerPoll();
   }
-  // yoksa giriş ekranı zaten görünür
 }
 
 function loginScorer(){
@@ -365,43 +358,32 @@ function loginScorer(){
 }
 
 // ══ SCORER POLL ══════════════════════════════════
-// Her 4 sn'de oturum durumunu kontrol et
 function startScorerPoll(){
   if(scorerPollId) clearInterval(scorerPollId);
-  checkScorerStatus(); // hemen bir kere
-  scorerPollId=setInterval(checkScorerStatus,4000);
+  checkScorerStatus(); 
+  scorerPollId=setInterval(checkScorerStatus,1500);
 }
 
 async function checkScorerStatus(){
   try{
     const data=await api({action:'status'});
     if(data.session_active){
-      // Yeni oturum açıldıysa veya farklı bir adaysa
       if(data.speaker !== currentSpeaker){
         currentSpeaker=data.speaker;
         scorerVoted=false;
         openScoringUI(data.speaker);
-      } else if(!scorerVoted){
-        // Aynı oturum, henüz oy vermedi — form görünür kalsın
+      } else if(scorerVoted){
+        showScorerVotedWait();
+      } else {
         showScorerActiveCard();
       }
       setStatusBar('open','🟢 Aktif oturum — puanlama açık');
     } else {
-      // Oturum kapalı
-      if(currentSpeaker){
-        // Az önce kapandı
-        if(!scorerVoted){
-          showScorerClosed();
-        }
-        // Bir sonraki oturum için sıfırla
-        setTimeout(()=>{
-          currentSpeaker='';
-          scorerVoted=false;
-          showScorerWait();
-        },5000);
-      } else {
-        showScorerWait();
+      if(currentSpeaker && !scorerVoted){
+        showScorerClosed();
       }
+      currentSpeaker='';
+      if(!scorerVoted) showScorerWait();
       setStatusBar('waiting','⏳ Oturum bekleniyor…');
     }
   }catch(e){}
@@ -420,7 +402,6 @@ function openScoringUI(speaker){
   document.getElementById('scoreDot').classList.remove('off');
   document.getElementById('scoreBadgeTxt').textContent='Oturum açık';
   document.getElementById('scorerSpeakerTitle').textContent=speaker;
-  // Formu sıfırla
   document.getElementById('scoringForm').style.display='block';
   document.getElementById('successMsg').style.display='none';
   const slider=document.getElementById('scoreSlider');
@@ -439,6 +420,11 @@ function showScorerClosed(){
   document.getElementById('successMsg').style.display='block';
   setStatusBar('closed','⛔ Oturum kapatıldı');
 }
+function showScorerVotedWait(){
+  showScorerActiveCard();
+  document.getElementById('scoringForm').style.display='none';
+  document.getElementById('successMsg').style.display='block';
+}
 
 async function submitScore(){
   const slider=document.getElementById('scoreSlider');
@@ -446,26 +432,33 @@ async function submitScore(){
   const score=parseInt(slider.value);
   const btn=document.getElementById('submitBtn');
   btn.disabled=true; btn.innerHTML='<span class="spin"></span>Gönderiliyor…';
+
+  scorerVoted=true;
+  document.getElementById('successDetail').textContent=score+'/20 puanınız kaydedildi.';
+  document.getElementById('successIcon').textContent='✅';
+  document.getElementById('successTitle').textContent='Puanınız kaydedildi!';
+  document.getElementById('scoringForm').style.display='none';
+  document.getElementById('successMsg').style.display='block';
+  document.getElementById('scoreBadgeTxt').textContent='Puanınız gönderildi ✓';
+
   try{
     const data=await api({action:'score',rater:myName,score:score});
-    if(data.status==='ok'){
-      scorerVoted=true;
-      document.getElementById('successDetail').textContent=score+'/20 puanınız kaydedildi.';
-      document.getElementById('successIcon').textContent='✅';
-      document.getElementById('successTitle').textContent='Puanınız kaydedildi!';
-      document.getElementById('scoringForm').style.display='none';
-      document.getElementById('successMsg').style.display='block';
-      document.getElementById('scoreBadgeTxt').textContent='Puanınız gönderildi ✓';
-    } else if(data.status==='duplicate'){
-      showToast("Bu oturum için zaten puan verdiniz.");
+    if(data.status==='duplicate'){
+    } else if(data.status!=='ok'){
+      scorerVoted=false;
+      document.getElementById('scoringForm').style.display='block';
+      document.getElementById('successMsg').style.display='none';
+      document.getElementById('scoreBadgeTxt').textContent='Oturum açık';
       btn.disabled=false; btn.textContent='✓ Puanı Gönder';
-    } else {
-      showToast(data.message||"Hata oluştu.");
-      btn.disabled=false; btn.textContent='✓ Puanı Gönder';
+      showToast(data.message||"Hata oluştu, tekrar deneyin.");
     }
   }catch(e){
-    showToast("Bağlantı hatası, tekrar deneyin.");
+    scorerVoted=false;
+    document.getElementById('scoringForm').style.display='block';
+    document.getElementById('successMsg').style.display='none';
+    document.getElementById('scoreBadgeTxt').textContent='Oturum açık';
     btn.disabled=false; btn.textContent='✓ Puanı Gönder';
+    showToast("Bağlantı hatası, tekrar deneyin.");
   }
 }
 
@@ -473,33 +466,88 @@ async function submitScore(){
 function loginTeacher(){
   const pass=document.getElementById('teacherPass').value.trim();
   if(pass!==TEACHER_PASS){showToast("Şifre yanlış!");return;}
+  localStorage.setItem("teacherLoggedIn","true");
+  showTeacherPanel();
+}
+
+// SHOW TEACHER PANEL (GÜNCELLENDİ)
+function showTeacherPanel(){
+  showView('teacher');
   document.getElementById('teacherLoginCard').style.display='none';
   document.getElementById('teacherPanel').style.display='block';
   renderStudentList();
   loadHistory();
   startTeacherPoll();
+  restoreTeacherSession();
 }
 
-// ── Öğrenci Listesi ──
-function saveStudents(){ localStorage.setItem("studentList",JSON.stringify(students)); }
+async function restoreTeacherSession(){
+  try{
+    const data=await api({action:'status'});
+    
+    // Açılışta öğrenci listesini sunucudan çek
+    if(data.students) {
+      students = data.students;
+      renderStudentList();
+    }
 
-function addStudent(){
+    if(data.session_active){
+      const idx=students.indexOf(data.speaker);
+      activeStudentIdx=idx;
+      localStorage.setItem("activeSpeaker", data.speaker);
+      renderStudentList();
+      document.getElementById('activeSessionInfo').style.display='block';
+      document.getElementById('activeSessionSpeaker').textContent=data.speaker;
+      document.getElementById('activeScoreCount').textContent=
+        data.score_count===0?'Henüz puan gelmedi.':data.score_count+' puanlayıcı puan verdi.';
+      document.getElementById('teacherDot').classList.remove('off');
+      setStatusBar('open','🟢 Aktif oturum — puanlama açık');
+    } else {
+      localStorage.removeItem("activeSpeaker");
+      activeStudentIdx=-1;
+      renderStudentList();
+      document.getElementById('activeSessionInfo').style.display='none';
+      setStatusBar(null);
+    }
+  }catch(e){}
+}
+
+// ── Öğrenci Listesi Sunucu Senkronizasyonu ──
+async function addStudent(){
   const inp=document.getElementById('newStudentName');
   const name=inp.value.trim();
   if(!name){showToast("Ad girin.");return;}
-  if(students.includes(name)){showToast("Bu aday zaten listede.");return;}
-  students.push(name);
-  saveStudents();
-  inp.value='';
-  renderStudentList();
+  
+  const btn = inp.nextElementSibling;
+  btn.disabled = true; btn.textContent = "...";
+  
+  try {
+    const data = await api({action: 'add_student', student: name});
+    if(data.status === 'ok') {
+      students = data.students;
+      inp.value = '';
+      renderStudentList();
+      showToast("Aday eklendi.");
+    }
+  } catch(e) {
+    showToast("Bağlantı hatası!");
+  }
+  btn.disabled = false; btn.textContent = "+ Ekle";
 }
 
-function removeStudent(i){
+async function removeStudent(i){
   if(activeStudentIdx===i){showToast("Aktif oturumu önce kapatın.");return;}
-  students.splice(i,1);
-  if(activeStudentIdx>i) activeStudentIdx--;
-  saveStudents();
-  renderStudentList();
+  const name = students[i];
+  try {
+    const data = await api({action: 'remove_student', student: name});
+    if(data.status === 'ok') {
+      students = data.students;
+      if(activeStudentIdx > i) activeStudentIdx--;
+      renderStudentList();
+    }
+  } catch(e) {
+    showToast("Bağlantı hatası!");
+  }
 }
 
 function renderStudentList(){
@@ -529,14 +577,13 @@ function renderStudentList(){
 // ── Oturum Aç ──
 async function startSession(idx){
   const speaker=students[idx];
-  const btn=document.querySelectorAll('.row-actions .btn')[idx*2];
-  // Tüm aç butonlarını geçici devre dışı bırak
   document.querySelectorAll('.row-actions .btn').forEach(b=>b.disabled=true);
 
   try{
     const data=await api({action:'start',speaker});
     if(data.status==='ok'){
       activeStudentIdx=idx;
+      localStorage.setItem("activeSpeaker", speaker);
       renderStudentList();
       document.getElementById('activeSessionInfo').style.display='block';
       document.getElementById('activeSessionSpeaker').textContent=speaker;
@@ -562,6 +609,7 @@ async function closeSession(){
   try{
     const data=await api({action:'close'});
     activeStudentIdx=-1;
+    localStorage.removeItem("activeSpeaker");
     renderStudentList();
     document.getElementById('activeSessionInfo').style.display='none';
     document.getElementById('teacherDot').classList.add('off');
@@ -581,23 +629,29 @@ async function closeSession(){
   }
 }
 
-// ── Teacher Poll (puan sayısı) ──
+// ── Teacher Poll (puan sayısı ve öğrenci listesi senkronizasyonu) ──
 function startTeacherPoll(){
   if(teacherPollId) clearInterval(teacherPollId);
   teacherPollId=setInterval(async()=>{
-    if(activeStudentIdx===-1) return;
     try{
       const data=await api({action:'status'});
+      
+      // Öğrenci listesinde bir değişiklik varsa listeyi canlı güncelle
+      if(data.students && JSON.stringify(students) !== JSON.stringify(data.students)) {
+         students = data.students;
+         renderStudentList();
+      }
+
+      if(activeStudentIdx===-1) return;
       if(data.session_active){
         const n=data.score_count;
         const txt=n===0?'Henüz puan gelmedi.':n+' puanlayıcı puan verdi.';
         document.getElementById('activeScoreCount').textContent=txt;
-        // Listede de göster
         const sc=document.getElementById('scount-'+activeStudentIdx);
         if(sc&&n>0) sc.textContent=n+' puan';
       }
     }catch(e){}
-  },4000);
+  },1500);
 }
 
 // ══ RAPOR ════════════════════════════════════════
@@ -681,6 +735,9 @@ function copyHistReport(){
 // ══ INIT ══════════════════════════════════════════
 updateSlider(10);
 initScorer();
+if(teacherLoggedIn){
+  showTeacherPanel();
+}
 </script>
 </body>
 </html>
