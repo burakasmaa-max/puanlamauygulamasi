@@ -44,16 +44,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
 .radio-btn.yes.active { background: var(--green); border-color: var(--green); color: #fff; }
 .radio-btn.no.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .success-msg{text-align:center;padding:1.8rem 1rem;display:none} .success-icon{font-size:3.2rem;margin-bottom:.6rem}
-.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem;margin:1rem 0}
-.stat-box{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center}
-.stat-label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.25rem}
-.stat-value{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--ink)}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin:.5rem 0}
+@media(max-width: 450px) { .stat-grid { grid-template-columns: 1fr 1fr; } }
+.stat-box{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:.8rem;text-align:center}
+.stat-label{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.25rem}
+.stat-value{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--ink)}
 .score-item{display:flex;flex-direction:column;padding:.6rem .8rem;border-radius:8px;font-size:.88rem;margin-bottom:.4rem;background:var(--paper);border:1px solid var(--border)}
 .sbadge{display:inline-flex;align-items:center;gap:.4rem;background:var(--paper);border:1px solid var(--border);border-radius:8px;padding:.3rem .75rem;font-size:.8rem;color:var(--muted);margin-bottom:.9rem}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite} .dot.off{background:var(--muted);animation:none}
 .student-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem .85rem;border-radius:10px;border:1px solid var(--border);margin-bottom:.5rem;background:var(--paper);}
 .student-row.active-session{border-color:var(--green);background:#f0faf5;}
-.history-item{border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-bottom:.75rem;cursor:pointer;background:var(--card)}
+.history-item{border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:.75rem;cursor:pointer;background:var(--card); display:flex; justify-content:space-between; align-items:center;}
+.history-item:hover{box-shadow:var(--shadow)}
 hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 .spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;margin-right:.35rem}
 @keyframes rot{to{transform:rotate(360deg)}} @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
@@ -63,6 +65,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 .demo-box { background:#f9f9f9; padding:1rem; border-radius:10px; margin-top:.5rem; font-size:.85rem;}
 .demo-box span { display:inline-block; margin-right:1rem; margin-bottom:.5rem; }
 .edit-list-item { display:flex; gap:.5rem; margin-bottom:.5rem; }
+.top-score-text { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; text-align: center; }
 </style>
 </head>
 <body>
@@ -77,7 +80,6 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 <div class="statusbar" id="statusBar"></div>
 
 <div class="view active" id="view-scorer">
-
   <div id="scorerLoginScreen">
     <div class="card">
       <div class="card-title">Sisteme Katılın</div>
@@ -182,23 +184,26 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
       <div class="demo-box" id="rDemoBox"></div>
 
       <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--accent)">Holistik Değerlendirme (Aşama 1)</div>
-      <div class="stat-grid" style="margin-top:.5rem">
+      <div class="stat-grid">
         <div class="stat-box"><div class="stat-label">Ortalama</div><div class="stat-value" id="rMean1">—</div></div>
-        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="rStd1">—</div></div>
+        <div class="stat-box"><div class="stat-label">Min/Max</div><div class="stat-value" id="rMinMax1" style="font-size:1.2rem; line-height:1.6">—</div></div>
+        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="rStd1" style="font-size:1.2rem; line-height:1.6">—</div></div>
       </div>
+      <div class="top-score-text" id="rTop3_1"></div>
       
       <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--green)">Kontrol Listesi (Aşama 2)</div>
-      <div class="stat-grid" style="margin-top:.5rem">
+      <div class="stat-grid">
         <div class="stat-box"><div class="stat-label">Ortalama</div><div class="stat-value" id="rMean2">—</div></div>
-        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="rStd2">—</div></div>
+        <div class="stat-box"><div class="stat-label">Min/Max</div><div class="stat-value" id="rMinMax2" style="font-size:1.2rem; line-height:1.6">—</div></div>
+        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="rStd2" style="font-size:1.2rem; line-height:1.6">—</div></div>
       </div>
+      <div class="top-score-text" id="rTop3_2"></div>
 
       <div style="margin:1.5rem 0 .5rem; font-weight:bold; font-size:.85rem; color:var(--muted)">BİREYSEL DEĞERLENDİRMELER (<span id="rCount">0</span> Kişi)</div>
       <div id="rList"></div>
       <hr>
-      <div class="btn-row">
-        <button class="btn btn-outline" onclick="copyReport()">📋 Kopyala</button>
-        <button class="btn btn-success" onclick="downloadSingleReportCSV()">📥 Excel (CSV) İndir</button>
+      <div style="display:flex; gap:0.5rem">
+        <button class="btn btn-success" style="flex:2" onclick="downloadSingleReportCSV()">📥 Raporu Excel (CSV) İndir</button>
       </div>
     </div>
 
@@ -214,20 +219,38 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.5rem">
         <div class="card-title" style="margin:0">Geçmiş Oturumlar</div>
-        <button class="btn btn-outline btn-sm" onclick="downloadAllHistoryCSV()">Tümünü İndir 📥</button>
+        <div style="display:flex; gap:0.5rem;">
+          <button class="btn btn-danger btn-sm" onclick="clearAllHistory()">Tümünü Sil</button>
+          <button class="btn btn-success btn-sm" onclick="downloadAllHistoryCSV()">Toplu İndir 📥</button>
+        </div>
       </div>
+      <div class="card-sub">Silme ve toplu indirme işlemlerini yapabilirsiniz. Rapor detayına inmek için üzerine tıklayın.</div>
       <div id="historyList"></div>
     </div>
     
     <div class="card" id="histDetailCard" style="display:none">
       <button class="btn btn-outline btn-sm" style="margin-bottom:1rem" onclick="closeHistDetail()">← Geri Dön</button>
       <div class="card-title" id="hdTitle"></div><div class="card-sub" id="hdDate"></div>
+      
       <div class="demo-box" id="hdDemoBox"></div>
+      
+      <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--accent)">Holistik Değerlendirme (Aşama 1)</div>
       <div class="stat-grid">
-        <div class="stat-box"><div class="stat-label">Holistik Ort.</div><div class="stat-value" id="hdMean1">—</div></div>
-        <div class="stat-box"><div class="stat-label">Kontrol Ort.</div><div class="stat-value" id="hdMean2">—</div></div>
+        <div class="stat-box"><div class="stat-label">Ortalama</div><div class="stat-value" id="hdMean1">—</div></div>
+        <div class="stat-box"><div class="stat-label">Min/Max</div><div class="stat-value" id="hdMinMax1" style="font-size:1.2rem; line-height:1.6">—</div></div>
+        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="hdStd1" style="font-size:1.2rem; line-height:1.6">—</div></div>
       </div>
-      <div id="hdList"></div>
+      <div class="top-score-text" id="hdTop3_1"></div>
+      
+      <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--green)">Kontrol Listesi (Aşama 2)</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-label">Ortalama</div><div class="stat-value" id="hdMean2">—</div></div>
+        <div class="stat-box"><div class="stat-label">Min/Max</div><div class="stat-value" id="hdMinMax2" style="font-size:1.2rem; line-height:1.6">—</div></div>
+        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="hdStd2" style="font-size:1.2rem; line-height:1.6">—</div></div>
+      </div>
+      <div class="top-score-text" id="hdTop3_2"></div>
+
+      <div id="hdList" style="margin-top:1.5rem"></div>
       <hr>
       <button class="btn btn-success" onclick="downloadSingleReportCSV(true)">📥 Bu Oturumu Excel (CSV) İndir</button>
     </div>
@@ -238,7 +261,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 
 <script>
 // ==========================================
-// YENİ API LİNKİNİZ
+// API LİNKİNİZ (Güncel Dağıtım Varsa Buraya Ekleyin)
 const API = "https://script.google.com/macros/s/AKfycbzOfTepmgkaW7yiz1mewcc7us1VAwKbCMyo7C-taK1qAdzpE-uHQe_O9h4qKqJD7EET/exec";
 // ==========================================
 
@@ -501,8 +524,29 @@ async function saveChecklistToDB() {
   } catch(e) { showToast("Bağlantı hatası."); }
 }
 
+// ════ GEÇMİŞ YÖNETİMİ ════
+async function deleteHistory(sessionId) {
+  if(!confirm("Bu oturumu silmek istediğinize emin misiniz?")) return;
+  try {
+    const data = await api({action: 'delete_history', pass: savedPass, sessionId: sessionId});
+    if(data.status === 'ok') { showToast("Kayıt silindi."); loadHistory(); document.getElementById('histDetailCard').style.display='none'; }
+  } catch(e) { showToast("Bağlantı hatası!"); }
+}
+
+async function clearAllHistory() {
+  if(!confirm("Tüm geçmiş kayıtları kalıcı olarak silmek istediğinize emin misiniz?")) return;
+  try {
+    const data = await api({action: 'clear_history', pass: savedPass});
+    if(data.status === 'ok') { showToast("Tüm geçmiş silindi."); loadHistory(); document.getElementById('histDetailCard').style.display='none'; }
+  } catch(e) { showToast("Bağlantı hatası!"); }
+}
 
 // ════ RAPOR VE İNDİRME ════
+function formatTop3(top3Array) {
+  if(!top3Array || top3Array.length === 0) return "En çok verilen puan: Veri Yok";
+  return "En çok verilen: " + top3Array.map(t => `<b style="color:var(--ink)">${t.val}</b> (${t.count} kişi)`).join(', ');
+}
+
 function generateDemographics(scores) {
   let f=0, m=0, totalAge=0, totalGpa=0;
   scores.forEach(s => {
@@ -517,23 +561,34 @@ function renderReport(data,prefix){
   const{speaker,scores,stats}=data; 
   if(prefix==='r') lastReport=data; else lastHistItem=data;
   
-  // HATA ÖNLEYİCİ: Eski verilerde stats.s1 olmayabilir, geriye dönük uyumluluk
+  // Geriye dönük uyumluluk ve güvenlik (eski verilerde stats.s1 olmayabilir)
   const s1_mean = stats.s1 ? stats.s1.mean : (stats.mean || '-');
   const s1_std = stats.s1 ? stats.s1.std : (stats.std || '-');
+  const s1_minmax = stats.s1 ? `${stats.s1.min} / ${stats.s1.max}` : '-';
+  const s1_top3 = stats.s1 ? formatTop3(stats.s1.top3) : '-';
+
   const s2_mean = stats.s2 ? stats.s2.mean : '-';
   const s2_std = stats.s2 ? stats.s2.std : '-';
+  const s2_minmax = stats.s2 ? `${stats.s2.min} / ${stats.s2.max}` : '-';
+  const s2_top3 = stats.s2 ? formatTop3(stats.s2.top3) : '-';
 
+  // Değerleri Ekrana Yazdır
   document.getElementById(prefix+'Mean1').textContent = s1_mean; 
   document.getElementById(prefix+'Std1').textContent = s1_std;
+  document.getElementById(prefix+'MinMax1').textContent = s1_minmax;
+  document.getElementById(prefix+'Top3_1').innerHTML = s1_top3;
+
   document.getElementById(prefix+'Mean2').textContent = s2_mean; 
   document.getElementById(prefix+'Std2').textContent = s2_std;
+  document.getElementById(prefix+'MinMax2').textContent = s2_minmax;
+  document.getElementById(prefix+'Top3_2').innerHTML = s2_top3;
   
   if(prefix==='r') { document.getElementById('reportSpeaker').textContent=speaker; document.getElementById('rCount').textContent=stats.n; document.getElementById('rDemoBox').innerHTML = generateDemographics(scores); }
   else { document.getElementById('hdDemoBox').innerHTML = generateDemographics(scores); }
 
   const list=document.getElementById(prefix+'List'); list.innerHTML='';
   [...scores].sort((a,b)=>b.score1-a.score1).forEach(s=>{
-    const ageInfo = s.age && s.age !== "0" ? ` (${s.gender?s.gender.charAt(0):''}, ${s.age}, ${s.gpa||''})` : '';
+    const ageInfo = s.age && s.age !== "0" ? ` (${s.gender?s.gender.charAt(0):''}, Yaş:${s.age}, G:${s.gpa||''})` : '';
     const score2Text = s.score2 !== undefined ? s.score2 : '-';
     list.innerHTML+=`<div class="score-item"><div class="si-header"><span>${s.name} <span style="font-weight:normal;color:var(--muted);font-size:.75rem">${ageInfo}</span></span></div><div class="si-details"><span>Holistik: <b style="color:var(--ink)">${s.score1}/20</b></span><span>Kontrol L.: <b style="color:var(--green)">${score2Text}/20</b></span></div></div>`;
   });
@@ -545,15 +600,18 @@ function copyReport(d){
   navigator.clipboard.writeText(lines.join('\n')).then(()=>showToast("Kopyalandı!"));
 }
 
+// ════ CSV/EXCEL OLUŞTURUCU ════
+// TÜRKIYE BÖLGE AYARLARI İÇİN VİRGÜL (,) YERİNE NOKTALI VİRGÜL (;) KULLANILDI
 function createCSVContent(data) {
-  let csv = "Oturum Adayi,Puanlayici,Cinsiyet,Yas,GANO,Holistik Puan,Kontrol Puan\n";
+  let csv = "Öğrenci Adı;Puanlayıcı Adı-Soyadı;Cinsiyet;Yaş;GANO;Holistik Puan;Kontrol Listesi Puanı\n";
   data.scores.forEach(s => {
-    csv += `"${data.speaker}","${s.name}","${s.gender||''}","${s.age||''}","${s.gpa||''}","${s.score1}","${s.score2!==undefined?s.score2:''}"\n`;
+    csv += `"${data.speaker}";"${s.name}";"${s.gender||''}";"${s.age||''}";"${s.gpa||''}";"${s.score1}";"${s.score2!==undefined?s.score2:''}"\n`;
   });
   return csv;
 }
 
 function triggerDownload(csvContent, fileName) {
+  // UTF-8 BOM eklenerek Excel'de Türkçe karakterlerin bozulması önlenir
   const blob = new Blob(["\uFEFF"+csvContent], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
@@ -573,10 +631,10 @@ function downloadSingleReportCSV(isHistory = false) {
 
 function downloadAllHistoryCSV() {
   if(!allHistory || allHistory.length === 0) { showToast("Geçmiş veri yok."); return; }
-  let csv = "Oturum Adayi,Tarih,Puanlayici,Cinsiyet,Yas,GANO,Holistik Puan,Kontrol Puan\n";
+  let csv = "Tarih;Öğrenci Adı;Puanlayıcı Adı-Soyadı;Cinsiyet;Yaş;GANO;Holistik Puan;Kontrol Listesi Puanı\n";
   allHistory.forEach(session => {
     session.scores.forEach(s => {
-      csv += `"${session.speaker}","${session.date}","${s.name}","${s.gender||''}","${s.age||''}","${s.gpa||''}","${s.score1}","${s.score2!==undefined?s.score2:''}"\n`;
+      csv += `"${session.date}";"${session.speaker}";"${s.name}";"${s.gender||''}";"${s.age||''}";"${s.gpa||''}";"${s.score1}";"${s.score2!==undefined?s.score2:''}"\n`;
     });
   });
   triggerDownload(csv, `Tum_Gecmis_Raporlar.csv`);
@@ -589,15 +647,25 @@ async function loadHistory(){
     if(!data.history||data.history.length===0){ el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted)">Geçmiş yok.</div>'; return; }
     allHistory = data.history;
     el.innerHTML='';
-    data.history.forEach(item=>{
+    
+    // Geçmiş veriler array index'i üzerinden yükleniyor (çökme sorununu engeller)
+    allHistory.forEach((item, index)=>{
       const s1_m = item.stats.s1 ? item.stats.s1.mean : (item.stats.mean||'-');
       const s2_m = item.stats.s2 ? item.stats.s2.mean : '-';
-      el.innerHTML+=`<div class="history-item" onclick='showHistDetail(${JSON.stringify(item).replace(/'/g,"&#39;")})'><div style="font-weight:600">${item.speaker} <span style="font-weight:normal;font-size:.75rem;color:var(--muted);float:right">${item.date}</span></div><div style="font-size:.8rem;color:var(--muted);margin-top:.3rem">👥 ${item.stats.n} | H. Ort: ${s1_m} | K. Ort: ${s2_m}</div></div>`;
+      el.innerHTML+=`
+      <div class="history-item" onclick="showHistDetail(${index})">
+        <div style="flex:1">
+          <div style="font-weight:600">${item.speaker}</div>
+          <div style="font-size:.8rem;color:var(--muted);margin-top:.3rem">🗓️ ${item.date} | 👥 ${item.stats.n} Kişi | H. Ort: ${s1_m}</div>
+        </div>
+        <button class="btn btn-outline btn-sm" style="border-color:var(--accent); color:var(--accent)" onclick="event.stopPropagation(); deleteHistory('${item.sessionId}')">Sil</button>
+      </div>`;
     });
   }catch(e){ el.innerHTML='Yüklenemedi.'; }
 }
 
-function showHistDetail(item){ 
+function showHistDetail(index){ 
+  const item = allHistory[index];
   lastHistItem=item; 
   document.getElementById('histDetailCard').style.display='block'; 
   document.getElementById('hdTitle').textContent=item.speaker; 
