@@ -124,19 +124,19 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
         <div class="card-sub">Aşama 1: Konuşan adayın genel performansını puanlayın.</div>
         <div class="score-display">
           <div class="score-big" id="scoreDisplay">10</div>
-          <div class="score-range">0 – 20 arasında holistik puan</div>
+          <div class="score-range">Please rate on a scale of 0 to 20.</div>
         </div>
         <input type="range" min="0" max="20" value="10" id="scoreSlider" oninput="updateSlider(this.value)">
         <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-bottom:1rem"><span>0</span><span>10</span><span>20</span></div>
         <hr>
-        <button class="btn btn-primary" onclick="goToStep2()">Sonraki Adım: Kontrol Listesi →</button>
+        <button class="btn btn-primary" onclick="goToStep2()">Next Step →</button>
       </div>
 
       <div id="scoringStep2" style="display:none">
         <div class="card-sub">Aşama 2: Adayın performansına göre aşağıdaki maddeleri işaretleyin.</div>
         <div class="checklist-container" id="checklist"></div>
         <hr>
-        <button class="btn btn-success" id="submitBtn" onclick="submitScores()">✓ Değerlendirmeyi Gönder</button>
+        <button class="btn btn-success" id="submitBtn" onclick="submitScores()">✓ SEND</button>
       </div>
 
       <div class="success-msg" id="successMsg">
@@ -319,8 +319,8 @@ function renderScorerChecklist(list) {
       <div class="check-item" id="item-${index}">
         <label onclick="selectCheckRadio(${index}, 'yes')">${index+1}. ${item}</label>
         <div class="radio-group">
-          <div class="radio-btn yes" onclick="selectCheckRadio(${index}, 'yes')">Evet</div>
-          <div class="radio-btn no" onclick="selectCheckRadio(${index}, 'no')">Hayır</div>
+          <div class="radio-btn yes" onclick="selectCheckRadio(${index}, 'yes')">YES</div>
+          <div class="radio-btn no" onclick="selectCheckRadio(${index}, 'no')">NO</div>
         </div>
       </div>`;
   });
