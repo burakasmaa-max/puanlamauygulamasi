@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Öğretmen Adayı Puanlama Sistemi</title>
+<title>Teacher Candidate Scoring System</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root { --ink: #1a1a2e; --paper: #f5f0e8; --accent: #c8410a; --green: #2d6a4f; --muted: #7a7a8a; --border: #d9d2c4; --card: #fff; --shadow: 0 2px 20px rgba(26,26,46,.09); }
@@ -71,10 +71,10 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 <body>
 
 <nav class="nav">
-  <div class="nav-brand">📋 Puanlama Sistemi</div>
+  <div class="nav-brand">📋 Scoring System</div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showView('scorer')">Puanlayıcı</button>
-    <button class="nav-tab" onclick="showView('teacher')">Öğretmen</button>
+    <button class="nav-tab active" onclick="showView('scorer')">Scorer</button>
+    <button class="nav-tab" onclick="showView('teacher')">Teacher</button>
   </div>
 </nav>
 <div class="statusbar" id="statusBar"></div>
@@ -82,26 +82,26 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 <div class="view active" id="view-scorer">
   <div id="scorerLoginScreen">
     <div class="card">
-      <div class="card-title">Sisteme Katılın</div>
-      <div class="card-sub">Lütfen değerlendirme öncesi bilgilerinizi eksiksiz girin. Veriler karşılaştırmalı analiz için kullanılacaktır.</div>
+      <div class="card-title">Join System</div>
+      <div class="card-sub">Please enter your details completely before evaluation. Data will be used for comparative analysis.</div>
       
-      <label>Adınız ve Soyadınız</label>
-      <input type="text" id="scorerName" placeholder="Örn: Ahmet Yılmaz">
+      <label>Full Name</label>
+      <input type="text" id="scorerName" placeholder="e.g., John Doe">
       
-      <label>Cinsiyetiniz</label>
+      <label>Gender</label>
       <select id="scorerGender">
-        <option value="">Seçiniz...</option>
-        <option value="Kadın">Kadın</option>
-        <option value="Erkek">Erkek</option>
+        <option value="">Select...</option>
+        <option value="Female">Female</option>
+        <option value="Male">Male</option>
       </select>
       
-      <label>Yaşınız</label>
-      <input type="number" id="scorerAge" placeholder="Örn: 21">
+      <label>Age</label>
+      <input type="number" id="scorerAge" placeholder="e.g., 21">
       
-      <label>Genel Not Ortalaması (GANO)</label>
-      <input type="number" step="0.01" id="scorerGpa" placeholder="Örn: 3.20">
+      <label>Grade Point Average (GPA)</label>
+      <input type="number" step="0.01" id="scorerGpa" placeholder="e.g., 3.20">
       
-      <button class="btn btn-primary" onclick="loginScorer()" style="margin-top:1rem">Sisteme Gir →</button>
+      <button class="btn btn-primary" onclick="loginScorer()" style="margin-top:1rem">Enter System →</button>
     </div>
   </div>
 
@@ -109,19 +109,19 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
     <div class="card" id="scorerWaitCard">
       <div class="waiting-screen">
         <div style="font-size:3rem;margin-bottom:1rem">⏳</div>
-        <h3>Oturum Bekleniyor</h3>
-        <p style="color:var(--muted);font-size:.88rem">Öğretmen bir aday için oturum açtığında burada görünecek.</p>
+        <h3>Waiting for Session</h3>
+        <p style="color:var(--muted);font-size:.88rem">It will appear here when the teacher opens a session for a candidate.</p>
         <p style="margin-top:.75rem;font-size:.8rem;color:var(--muted)" id="scorerWelcomeName"></p>
-        <button class="btn btn-outline btn-sm" style="margin-top:1.5rem" onclick="logoutScorer()">Çıkış Yap / Bilgileri Güncelle</button>
+        <button class="btn btn-outline btn-sm" style="margin-top:1.5rem" onclick="logoutScorer()">Log Out / Update Info</button>
       </div>
     </div>
 
     <div class="card" id="scorerActiveCard" style="display:none">
-      <div class="sbadge"><div class="dot" id="scoreDot"></div><span id="scoreBadgeTxt">Oturum açık</span></div>
+      <div class="sbadge"><div class="dot" id="scoreDot"></div><span id="scoreBadgeTxt">Session active</span></div>
       <div class="card-title" id="scorerSpeakerTitle">—</div>
       
       <div id="scoringStep1">
-        <div class="card-sub">Aşama 1: Konuşan adayın genel performansını puanlayın.</div>
+        <div class="card-sub">Step 1: Rate the general performance of the speaking candidate.</div>
         <div class="score-display">
           <div class="score-big" id="scoreDisplay">10</div>
           <div class="score-range">Please rate on a scale of 0 to 20.</div>
@@ -133,17 +133,17 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
       </div>
 
       <div id="scoringStep2" style="display:none">
-        <div class="card-sub">Aşama 2: Adayın performansına göre aşağıdaki maddeleri işaretleyin.</div>
+        <div class="card-sub">Step 2: Please mark the following items based on the student's performance.</div>
         <div class="checklist-container" id="checklist"></div>
         <hr>
-        <button class="btn btn-success" id="submitBtn" onclick="submitScores()">✓ SEND</button>
+        <button class="btn btn-success" id="submitBtn" onclick="submitScores()">✓ Send Evaluation</button>
       </div>
 
       <div class="success-msg" id="successMsg">
         <div class="success-icon" id="successIcon">✅</div>
-        <h3 id="successTitle">Değerlendirme Alındı!</h3>
+        <h3 id="successTitle">Evaluation Received!</h3>
         <p id="successDetail"></p>
-        <p style="margin-top:.75rem;font-size:.82rem;color:var(--muted)">Sonraki oturum açılınca ekran otomatik güncellenecek.</p>
+        <p style="margin-top:.75rem;font-size:.82rem;color:var(--muted)">The screen will update automatically when the next session opens.</p>
       </div>
     </div>
   </div>
@@ -152,107 +152,107 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 <div class="view" id="view-teacher">
 
   <div class="card" id="teacherLoginCard">
-    <div class="card-title">Öğretmen Girişi</div>
-    <div class="card-sub">Panele erişmek için yönetici şifresini girin.</div>
-    <label>Şifre</label>
-    <input type="password" id="teacherPass" placeholder="Şifreniz" onkeydown="if(event.key==='Enter')loginTeacher()"/>
-    <button class="btn btn-primary" onclick="loginTeacher()">Giriş Yap</button>
+    <div class="card-title">Teacher Login</div>
+    <div class="card-sub">Enter the admin password to access the panel.</div>
+    <label>Password</label>
+    <input type="password" id="teacherPass" placeholder="Your Password" onkeydown="if(event.key==='Enter')loginTeacher()"/>
+    <button class="btn btn-primary" onclick="loginTeacher()">Log In</button>
   </div>
 
   <div id="teacherPanel" style="display:none">
     
     <div class="card">
-      <div class="card-title">Aday & Oturum Yönetimi</div>
+      <div class="card-title">Candidate & Session Management</div>
       <div style="display:flex;gap:.5rem;margin-bottom:1rem;margin-top:1rem">
-        <input type="text" id="newStudentName" placeholder="Aday adı soyadı ekle…" style="margin-bottom:0;flex:1" onkeydown="if(event.key==='Enter')addStudent()"/>
-        <button class="btn btn-outline btn-sm" onclick="addStudent()">+ Ekle</button>
+        <input type="text" id="newStudentName" placeholder="Add candidate full name..." style="margin-bottom:0;flex:1" onkeydown="if(event.key==='Enter')addStudent()"/>
+        <button class="btn btn-outline btn-sm" onclick="addStudent()">+ Add</button>
       </div>
       <div id="studentList"></div>
     </div>
 
     <div class="card" id="activeSessionInfo" style="display:none; border-color:var(--green)">
-      <div class="sbadge"><div class="dot" id="teacherDot"></div><span id="teacherBadgeTxt">Oturum aktif</span></div>
+      <div class="sbadge"><div class="dot" id="teacherDot"></div><span id="teacherBadgeTxt">Session active</span></div>
       <div class="card-title" id="activeSessionSpeaker">—</div>
-      <div id="activeScoreCount" style="color:var(--muted);font-size:.88rem;margin-bottom:1rem">Henüz değerlendirme gelmedi.</div>
-      <button class="btn btn-danger" id="closeBtn" onclick="closeSession()">■ Oturumu Kapat ve Raporu Göster</button>
+      <div id="activeScoreCount" style="color:var(--muted);font-size:.88rem;margin-bottom:1rem">No evaluations received yet.</div>
+      <button class="btn btn-danger" id="closeBtn" onclick="closeSession()">■ Close Session and Show Report</button>
     </div>
 
     <div class="card" id="reportCard" style="display:none">
-      <div class="card-title">📊 Kıyaslamalı Rapor</div>
+      <div class="card-title">📊 Comparative Report</div>
       <div class="card-sub" id="reportSpeaker"></div>
       
       <div class="demo-box" id="rDemoBox"></div>
 
-      <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--accent)">Holistik Değerlendirme (Aşama 1)</div>
+      <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--accent)">Holistic Evaluation (Step 1)</div>
       <div class="stat-grid">
-        <div class="stat-box"><div class="stat-label">Ortalama</div><div class="stat-value" id="rMean1">—</div></div>
+        <div class="stat-box"><div class="stat-label">Mean</div><div class="stat-value" id="rMean1">—</div></div>
         <div class="stat-box"><div class="stat-label">Min/Max</div><div class="stat-value" id="rMinMax1" style="font-size:1.2rem; line-height:1.6">—</div></div>
-        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="rStd1" style="font-size:1.2rem; line-height:1.6">—</div></div>
+        <div class="stat-box"><div class="stat-label">Std. Dev</div><div class="stat-value" id="rStd1" style="font-size:1.2rem; line-height:1.6">—</div></div>
       </div>
       <div class="top-score-text" id="rTop3_1"></div>
       
-      <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--green)">Kontrol Listesi (Aşama 2)</div>
+      <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--green)">Checklist (Step 2)</div>
       <div class="stat-grid">
-        <div class="stat-box"><div class="stat-label">Ortalama</div><div class="stat-value" id="rMean2">—</div></div>
+        <div class="stat-box"><div class="stat-label">Mean</div><div class="stat-value" id="rMean2">—</div></div>
         <div class="stat-box"><div class="stat-label">Min/Max</div><div class="stat-value" id="rMinMax2" style="font-size:1.2rem; line-height:1.6">—</div></div>
-        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="rStd2" style="font-size:1.2rem; line-height:1.6">—</div></div>
+        <div class="stat-box"><div class="stat-label">Std. Dev</div><div class="stat-value" id="rStd2" style="font-size:1.2rem; line-height:1.6">—</div></div>
       </div>
       <div class="top-score-text" id="rTop3_2"></div>
 
-      <div style="margin:1.5rem 0 .5rem; font-weight:bold; font-size:.85rem; color:var(--muted)">BİREYSEL DEĞERLENDİRMELER (<span id="rCount">0</span> Kişi)</div>
+      <div style="margin:1.5rem 0 .5rem; font-weight:bold; font-size:.85rem; color:var(--muted)">INDIVIDUAL EVALUATIONS (<span id="rCount">0</span> People)</div>
       <div id="rList"></div>
       <hr>
       <div style="display:flex; gap:0.5rem">
-        <button class="btn btn-success" style="flex:2" onclick="downloadSingleReportCSV()">📥 Raporu Excel (CSV) İndir</button>
+        <button class="btn btn-success" style="flex:2" onclick="downloadSingleReportCSV()">📥 Download Report as Excel (CSV)</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">Kontrol Listesi Yönetimi</div>
-      <div class="card-sub">Puanlayıcılara gidecek soruları buradan düzenleyebilirsiniz. <br><small style="color:var(--accent)">(Değişiklikler bir sonraki oturumda geçerli olur.)</small></div>
+      <div class="card-title">Checklist Management</div>
+      <div class="card-sub">You can edit the questions going to scorers here. <br><small style="color:var(--accent)">(Changes will take effect in the next session.)</small></div>
       <div id="teacherChecklistContainer"></div>
-      <button class="btn btn-outline btn-sm" style="margin-top:.5rem" onclick="addChecklistItem()">+ Yeni Madde Ekle</button>
+      <button class="btn btn-outline btn-sm" style="margin-top:.5rem" onclick="addChecklistItem()">+ Add New Item</button>
       <hr>
-      <button class="btn btn-primary" onclick="saveChecklistToDB()">💾 Listeyi Sunucuya Kaydet</button>
+      <button class="btn btn-primary" onclick="saveChecklistToDB()">💾 Save List to Server</button>
     </div>
 
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.5rem">
-        <div class="card-title" style="margin:0">Geçmiş Oturumlar</div>
+        <div class="card-title" style="margin:0">Past Sessions</div>
         <div style="display:flex; gap:0.5rem;">
-          <button class="btn btn-danger btn-sm" onclick="clearAllHistory()">Tümünü Sil</button>
-          <button class="btn btn-success btn-sm" onclick="downloadAllHistoryCSV()">Toplu İndir 📥</button>
+          <button class="btn btn-danger btn-sm" onclick="clearAllHistory()">Delete All</button>
+          <button class="btn btn-success btn-sm" onclick="downloadAllHistoryCSV()">Download All 📥</button>
         </div>
       </div>
-      <div class="card-sub">Silme ve toplu indirme işlemlerini yapabilirsiniz. Rapor detayına inmek için üzerine tıklayın.</div>
+      <div class="card-sub">You can delete and bulk download. Click on an item to see report details.</div>
       <div id="historyList"></div>
     </div>
     
     <div class="card" id="histDetailCard" style="display:none">
-      <button class="btn btn-outline btn-sm" style="margin-bottom:1rem" onclick="closeHistDetail()">← Geri Dön</button>
+      <button class="btn btn-outline btn-sm" style="margin-bottom:1rem" onclick="closeHistDetail()">← Go Back</button>
       <div class="card-title" id="hdTitle"></div><div class="card-sub" id="hdDate"></div>
       
       <div class="demo-box" id="hdDemoBox"></div>
       
-      <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--accent)">Holistik Değerlendirme (Aşama 1)</div>
+      <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--accent)">Holistic Evaluation (Step 1)</div>
       <div class="stat-grid">
-        <div class="stat-box"><div class="stat-label">Ortalama</div><div class="stat-value" id="hdMean1">—</div></div>
+        <div class="stat-box"><div class="stat-label">Mean</div><div class="stat-value" id="hdMean1">—</div></div>
         <div class="stat-box"><div class="stat-label">Min/Max</div><div class="stat-value" id="hdMinMax1" style="font-size:1.2rem; line-height:1.6">—</div></div>
-        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="hdStd1" style="font-size:1.2rem; line-height:1.6">—</div></div>
+        <div class="stat-box"><div class="stat-label">Std. Dev</div><div class="stat-value" id="hdStd1" style="font-size:1.2rem; line-height:1.6">—</div></div>
       </div>
       <div class="top-score-text" id="hdTop3_1"></div>
       
-      <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--green)">Kontrol Listesi (Aşama 2)</div>
+      <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--green)">Checklist (Step 2)</div>
       <div class="stat-grid">
-        <div class="stat-box"><div class="stat-label">Ortalama</div><div class="stat-value" id="hdMean2">—</div></div>
+        <div class="stat-box"><div class="stat-label">Mean</div><div class="stat-value" id="hdMean2">—</div></div>
         <div class="stat-box"><div class="stat-label">Min/Max</div><div class="stat-value" id="hdMinMax2" style="font-size:1.2rem; line-height:1.6">—</div></div>
-        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="hdStd2" style="font-size:1.2rem; line-height:1.6">—</div></div>
+        <div class="stat-box"><div class="stat-label">Std. Dev</div><div class="stat-value" id="hdStd2" style="font-size:1.2rem; line-height:1.6">—</div></div>
       </div>
       <div class="top-score-text" id="hdTop3_2"></div>
 
       <div id="hdList" style="margin-top:1.5rem"></div>
       <hr>
-      <button class="btn btn-success" onclick="downloadSingleReportCSV(true)">📥 Bu Oturumu Excel (CSV) İndir</button>
+      <button class="btn btn-success" onclick="downloadSingleReportCSV(true)">📥 Download This Session as Excel (CSV)</button>
     </div>
   </div>
 </div>
@@ -285,7 +285,7 @@ function initScorer(){
   if(myScorerData && myScorerData.name){ 
     document.getElementById('scorerLoginScreen').style.display='none'; 
     document.getElementById('scorerMainScreen').style.display='block'; 
-    document.getElementById('scorerWelcomeName').textContent='Hoş geldin, '+myScorerData.name+' 👋'; 
+    document.getElementById('scorerWelcomeName').textContent='Welcome, '+myScorerData.name+' 👋'; 
     startScorerPoll(); 
   } 
 }
@@ -296,7 +296,7 @@ function loginScorer(){
   const age = document.getElementById('scorerAge').value.trim();
   const gpa = document.getElementById('scorerGpa').value.trim();
   
-  if(!name || !gender || !age || !gpa){ showToast("Lütfen tüm alanları doldurun."); return; }
+  if(!name || !gender || !age || !gpa){ showToast("Please fill in all fields."); return; }
   
   myScorerData = { name: name, gender: gender, age: age, gpa: gpa };
   localStorage.setItem("scorerData", JSON.stringify(myScorerData)); 
@@ -348,10 +348,10 @@ async function checkScorerStatus(){
       if(data.speaker !== currentSpeaker){ currentSpeaker=data.speaker; scorerVoted=false; openScoringUI(data.speaker); } 
       else if(scorerVoted){ showScorerVotedWait(); } 
       else { showScorerActiveCard(); }
-      setStatusBar('open','🟢 Aktif oturum — değerlendirme açık');
+      setStatusBar('open','🟢 Active session — evaluation open');
     } else {
       if(currentSpeaker && !scorerVoted){ showScorerClosed(); }
-      currentSpeaker=''; if(!scorerVoted) showScorerWait(); setStatusBar('waiting','⏳ Oturum bekleniyor…');
+      currentSpeaker=''; if(!scorerVoted) showScorerWait(); setStatusBar('waiting','⏳ Waiting for session…');
     }
   }catch(e){}
 }
@@ -364,7 +364,7 @@ function openScoringUI(speaker){
   document.getElementById('scoringStep1').style.display='block'; document.getElementById('scoringStep2').style.display='none'; document.getElementById('successMsg').style.display='none';
   const slider=document.getElementById('scoreSlider'); if(slider) slider.value=10; updateSlider(10);
   document.querySelectorAll('.checklist-container .radio-btn').forEach(btn => btn.classList.remove('active'));
-  const btn=document.getElementById('submitBtn'); if(btn){btn.disabled=false;btn.textContent='✓ Değerlendirmeyi Gönder';}
+  const btn=document.getElementById('submitBtn'); if(btn){btn.disabled=false;btn.textContent='✓ Send Evaluation';}
 }
 
 function goToStep2() {
@@ -376,15 +376,15 @@ function goToStep2() {
 
 function showScorerClosed(){
   document.getElementById('scoreDot').classList.add('off'); document.getElementById('scoringStep1').style.display='none'; document.getElementById('scoringStep2').style.display='none';
-  document.getElementById('successIcon').textContent='⛔'; document.getElementById('successTitle').textContent='Oturum kapandı';
-  document.getElementById('successDetail').textContent='Değerlendirme süresi doldu.'; document.getElementById('successMsg').style.display='block'; setStatusBar('closed','⛔ Oturum kapatıldı');
+  document.getElementById('successIcon').textContent='⛔'; document.getElementById('successTitle').textContent='Session closed';
+  document.getElementById('successDetail').textContent='Evaluation time expired.'; document.getElementById('successMsg').style.display='block'; setStatusBar('closed','⛔ Session closed');
 }
 function showScorerVotedWait(){ showScorerActiveCard(); document.getElementById('scoringStep1').style.display='none'; document.getElementById('scoringStep2').style.display='none'; document.getElementById('successMsg').style.display='block'; }
 
 async function submitScores(){
   const totalItems = activeChecklist.length;
   const answeredItems = document.querySelectorAll('.checklist-container .radio-btn.active').length;
-  if (answeredItems < totalItems) { showToast("Lütfen tüm maddeleri işaretleyin."); return; }
+  if (answeredItems < totalItems) { showToast("Please mark all items."); return; }
 
   const s1 = tempScore1;
   const yesCount = document.querySelectorAll('.checklist-container .radio-btn.yes.active').length;
@@ -392,31 +392,31 @@ async function submitScores(){
   // FORMÜL: (Evet Sayısı / Toplam Soru Sayısı) * 20
   const s2 = Math.round((yesCount / totalItems) * 20);
   
-  const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.innerHTML='<span class="spin"></span>Gönderiliyor…';
+  const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.innerHTML='<span class="spin"></span>Sending…';
   scorerVoted=true;
-  document.getElementById('successDetail').innerHTML=`Katkınız için teşekkürler.`;
-  document.getElementById('successIcon').textContent='✅'; document.getElementById('successTitle').textContent='Değerlendirme Alındı!';
+  document.getElementById('successDetail').innerHTML=`Thank you for your contribution.`;
+  document.getElementById('successIcon').textContent='✅'; document.getElementById('successTitle').textContent='Evaluation Received!';
   document.getElementById('scoringStep2').style.display='none'; document.getElementById('successMsg').style.display='block';
 
   try{
     const data=await api({ action:'score', rater:myScorerData.name, gender:myScorerData.gender, age:myScorerData.age, gpa:myScorerData.gpa, score1:s1, score2:s2 });
     if(data.status!=='ok' && data.status!=='duplicate'){
-      scorerVoted=false; document.getElementById('scoringStep2').style.display='block'; document.getElementById('successMsg').style.display='none'; btn.disabled=false; btn.textContent='✓ Değerlendirmeyi Gönder'; showToast(data.message||"Hata.");
+      scorerVoted=false; document.getElementById('scoringStep2').style.display='block'; document.getElementById('successMsg').style.display='none'; btn.disabled=false; btn.textContent='✓ Send Evaluation'; showToast(data.message||"Error.");
     }
-  }catch(e){ scorerVoted=false; document.getElementById('scoringStep2').style.display='block'; document.getElementById('successMsg').style.display='none'; btn.disabled=false; btn.textContent='✓ Değerlendirmeyi Gönder'; showToast("Bağlantı hatası."); }
+  }catch(e){ scorerVoted=false; document.getElementById('scoringStep2').style.display='block'; document.getElementById('successMsg').style.display='none'; btn.disabled=false; btn.textContent='✓ Send Evaluation'; showToast("Connection error."); }
 }
 
 // ════════ TEACHER FONKSİYONLARI ════════
 async function loginTeacher(){
   const pass = document.getElementById('teacherPass').value.trim();
-  if(!pass){showToast("Şifre girin!");return;}
-  const btn = document.querySelector('#teacherLoginCard .btn-primary'); btn.disabled=true; btn.textContent="Bekleyin...";
+  if(!pass){showToast("Enter password!");return;}
+  const btn = document.querySelector('#teacherLoginCard .btn-primary'); btn.disabled=true; btn.textContent="Please wait...";
   try {
     const data = await api({action: 'verify_pass', pass: pass});
     if(data.status === 'ok') { localStorage.setItem("teacherPass", pass); savedPass = pass; showTeacherPanel(); } 
-    else { showToast("Şifre yanlış!"); }
-  } catch(e) { showToast("Bağlantı hatası!"); }
-  btn.disabled = false; btn.textContent = "Giriş Yap";
+    else { showToast("Incorrect password!"); }
+  } catch(e) { showToast("Connection error!"); }
+  btn.disabled = false; btn.textContent = "Log In";
 }
 
 function showTeacherPanel(){ showView('teacher'); document.getElementById('teacherLoginCard').style.display='none'; document.getElementById('teacherPanel').style.display='block'; renderStudentList(); loadHistory(); startTeacherPoll(); restoreTeacherSession(); }
@@ -430,8 +430,8 @@ async function restoreTeacherSession(){
     if(data.session_active){
       activeStudentIdx = students.indexOf(data.speaker);
       document.getElementById('activeSessionInfo').style.display='block'; document.getElementById('activeSessionSpeaker').textContent=data.speaker;
-      document.getElementById('activeScoreCount').textContent = data.score_count===0 ? 'Bekleniyor...' : data.score_count+' değerlendirme geldi.';
-      document.getElementById('teacherDot').classList.remove('off'); setStatusBar('open','🟢 Aktif oturum — değerlendirme açık');
+      document.getElementById('activeScoreCount').textContent = data.score_count===0 ? 'Waiting...' : data.score_count+' evaluations received.';
+      document.getElementById('teacherDot').classList.remove('off'); setStatusBar('open','🟢 Active session — evaluation open');
     } else { activeStudentIdx=-1; document.getElementById('activeSessionInfo').style.display='none'; setStatusBar(null); renderStudentList(); }
   }catch(e){}
 }
@@ -441,26 +441,26 @@ async function addStudent(){
   const btn = inp.nextElementSibling; btn.disabled = true; btn.textContent = "...";
   try {
     const data = await api({action: 'add_student', student: name, pass: savedPass});
-    if(data.status === 'ok') { students = data.students; inp.value = ''; renderStudentList(); showToast("Eklendi."); }
-  } catch(e) { showToast("Hata!"); }
-  btn.disabled = false; btn.textContent = "+ Ekle";
+    if(data.status === 'ok') { students = data.students; inp.value = ''; renderStudentList(); showToast("Added."); }
+  } catch(e) { showToast("Error!"); }
+  btn.disabled = false; btn.textContent = "+ Add";
 }
 
 async function removeStudent(i){
-  if(activeStudentIdx===i){showToast("Aktif oturumu kapatın.");return;}
+  if(activeStudentIdx===i){showToast("Close the active session.");return;}
   try {
     const data = await api({action: 'remove_student', student: students[i], pass: savedPass});
     if(data.status === 'ok') { students = data.students; if(activeStudentIdx > i) activeStudentIdx--; renderStudentList(); }
-  } catch(e) { showToast("Hata!"); }
+  } catch(e) { showToast("Error!"); }
 }
 
 function renderStudentList(){
   const el=document.getElementById('studentList');
-  if(!students.length){ el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted);font-size:.9rem">Aday listesi boş.</div>'; return; }
+  if(!students.length){ el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted);font-size:.9rem">Candidate list is empty.</div>'; return; }
   el.innerHTML='';
   students.forEach((name,i)=>{
     const isActive=(activeStudentIdx===i);
-    el.innerHTML+=`<div class="student-row ${isActive?'active-session':''}"><span class="student-name">${isActive?'🟢 ':''}${name}</span><span class="student-count" id="scount-${i}"></span><div class="row-actions">${isActive ? `<button class="btn btn-danger btn-sm" onclick="closeSession()">Kapat</button>` : `<button class="btn btn-success btn-sm" onclick="startSession(${i})" ${activeStudentIdx!==-1?'disabled':''}>Aç</button><button class="btn btn-outline btn-sm" onclick="removeStudent(${i})" ${activeStudentIdx!==-1?'disabled':''}>✕</button>`}</div></div>`;
+    el.innerHTML+=`<div class="student-row ${isActive?'active-session':''}"><span class="student-name">${isActive?'🟢 ':''}${name}</span><span class="student-count" id="scount-${i}"></span><div class="row-actions">${isActive ? `<button class="btn btn-danger btn-sm" onclick="closeSession()">Close</button>` : `<button class="btn btn-success btn-sm" onclick="startSession(${i})" ${activeStudentIdx!==-1?'disabled':''}>Open</button><button class="btn btn-outline btn-sm" onclick="removeStudent(${i})" ${activeStudentIdx!==-1?'disabled':''}>✕</button>`}</div></div>`;
   });
 }
 
@@ -468,19 +468,19 @@ async function startSession(idx){
   const speaker=students[idx]; document.querySelectorAll('.row-actions .btn').forEach(b=>b.disabled=true);
   try{
     const data=await api({action:'start', speaker:speaker, pass:savedPass});
-    if(data.status==='ok'){ activeStudentIdx=idx; renderStudentList(); document.getElementById('activeSessionInfo').style.display='block'; document.getElementById('activeSessionSpeaker').textContent=speaker; document.getElementById('activeScoreCount').textContent='Bekleniyor...'; document.getElementById('reportCard').style.display='none'; document.getElementById('teacherDot').classList.remove('off'); setStatusBar('open','🟢 Aktif oturum — değerlendirme açık'); } 
-  }catch(e){ showToast("Hata!"); renderStudentList(); }
+    if(data.status==='ok'){ activeStudentIdx=idx; renderStudentList(); document.getElementById('activeSessionInfo').style.display='block'; document.getElementById('activeSessionSpeaker').textContent=speaker; document.getElementById('activeScoreCount').textContent='Waiting...'; document.getElementById('reportCard').style.display='none'; document.getElementById('teacherDot').classList.remove('off'); setStatusBar('open','🟢 Active session — evaluation open'); } 
+  }catch(e){ showToast("Error!"); renderStudentList(); }
 }
 
 async function closeSession(){
-  const btn=document.getElementById('closeBtn'); btn.disabled=true; btn.innerHTML='Kapatılıyor...';
+  const btn=document.getElementById('closeBtn'); btn.disabled=true; btn.innerHTML='Closing...';
   try{
     const data=await api({action:'close', pass:savedPass});
-    activeStudentIdx=-1; renderStudentList(); document.getElementById('activeSessionInfo').style.display='none'; document.getElementById('teacherDot').classList.add('off'); setStatusBar('closed','⛔ Oturum kapatıldı');
-    if(!data.scores||data.scores.length===0){ showToast("Değerlendirme girilmedi."); setStatusBar(null); } 
+    activeStudentIdx=-1; renderStudentList(); document.getElementById('activeSessionInfo').style.display='none'; document.getElementById('teacherDot').classList.add('off'); setStatusBar('closed','⛔ Session closed');
+    if(!data.scores||data.scores.length===0){ showToast("No evaluation entered."); setStatusBar(null); } 
     else { renderReport(data,'r'); document.getElementById('reportCard').style.display='block'; }
-    loadHistory(); btn.disabled=false; btn.textContent='■ Oturumu Kapat ve Raporu Göster';
-  }catch(e){ showToast("Hata!"); btn.disabled=false; btn.textContent='■ Oturumu Kapat'; }
+    loadHistory(); btn.disabled=false; btn.textContent='■ Close Session and Show Report';
+  }catch(e){ showToast("Error!"); btn.disabled=false; btn.textContent='■ Close Session'; }
 }
 
 function startTeacherPoll(){
@@ -491,8 +491,8 @@ function startTeacherPoll(){
       if(data.students && JSON.stringify(students) !== JSON.stringify(data.students)) { students = data.students; renderStudentList(); }
       if(activeStudentIdx===-1) return;
       if(data.session_active){
-        const n=data.score_count; document.getElementById('activeScoreCount').textContent = n===0?'Bekleniyor...':n+' kişi değerlendirdi.';
-        const sc=document.getElementById('scount-'+activeStudentIdx); if(sc&&n>0) sc.textContent=n+' evrak';
+        const n=data.score_count; document.getElementById('activeScoreCount').textContent = n===0?'Waiting...':n+' people evaluated.';
+        const sc=document.getElementById('scount-'+activeStudentIdx); if(sc&&n>0) sc.textContent=n+' submissions';
       }
     }catch(e){}
   },3000);
@@ -506,55 +506,55 @@ function renderTeacherChecklist(list) {
     container.innerHTML += `
       <div class="edit-list-item">
         <input type="text" class="t-check-input" value="${item}" style="margin:0">
-        <button class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Sil</button>
+        <button class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Delete</button>
       </div>`;
   });
 }
 function addChecklistItem() {
   const container = document.getElementById('teacherChecklistContainer');
-  container.innerHTML += `<div class="edit-list-item"><input type="text" class="t-check-input" placeholder="Yeni madde..." style="margin:0"><button class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Sil</button></div>`;
+  container.innerHTML += `<div class="edit-list-item"><input type="text" class="t-check-input" placeholder="New item..." style="margin:0"><button class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Delete</button></div>`;
 }
 async function saveChecklistToDB() {
   const inputs = document.querySelectorAll('.t-check-input');
   const newList = Array.from(inputs).map(inp => inp.value.trim()).filter(val => val !== "");
-  if(newList.length === 0) { showToast("Liste boş olamaz."); return; }
+  if(newList.length === 0) { showToast("List cannot be empty."); return; }
   try {
     const data = await api({ action: 'save_checklist', pass: savedPass, listData: JSON.stringify(newList) });
-    if(data.status === 'ok') showToast("Liste güncellendi."); else showToast("Hata!");
-  } catch(e) { showToast("Bağlantı hatası."); }
+    if(data.status === 'ok') showToast("List updated."); else showToast("Error!");
+  } catch(e) { showToast("Connection error."); }
 }
 
 // ════ GEÇMİŞ YÖNETİMİ ════
 async function deleteHistory(sessionId) {
-  if(!confirm("Bu oturumu silmek istediğinize emin misiniz?")) return;
+  if(!confirm("Are you sure you want to delete this session?")) return;
   try {
     const data = await api({action: 'delete_history', pass: savedPass, sessionId: sessionId});
-    if(data.status === 'ok') { showToast("Kayıt silindi."); loadHistory(); document.getElementById('histDetailCard').style.display='none'; }
-  } catch(e) { showToast("Bağlantı hatası!"); }
+    if(data.status === 'ok') { showToast("Record deleted."); loadHistory(); document.getElementById('histDetailCard').style.display='none'; }
+  } catch(e) { showToast("Connection error!"); }
 }
 
 async function clearAllHistory() {
-  if(!confirm("Tüm geçmiş kayıtları kalıcı olarak silmek istediğinize emin misiniz?")) return;
+  if(!confirm("Are you sure you want to permanently delete all history records?")) return;
   try {
     const data = await api({action: 'clear_history', pass: savedPass});
-    if(data.status === 'ok') { showToast("Tüm geçmiş silindi."); loadHistory(); document.getElementById('histDetailCard').style.display='none'; }
-  } catch(e) { showToast("Bağlantı hatası!"); }
+    if(data.status === 'ok') { showToast("All history deleted."); loadHistory(); document.getElementById('histDetailCard').style.display='none'; }
+  } catch(e) { showToast("Connection error!"); }
 }
 
 // ════ RAPOR VE İNDİRME ════
 function formatTop3(top3Array) {
-  if(!top3Array || top3Array.length === 0) return "En çok verilen puan: Veri Yok";
-  return "En çok verilen: " + top3Array.map(t => `<b style="color:var(--ink)">${t.val}</b> (${t.count} kişi)`).join(', ');
+  if(!top3Array || top3Array.length === 0) return "Most given score: No Data";
+  return "Most given: " + top3Array.map(t => `<b style="color:var(--ink)">${t.val}</b> (${t.count} people)`).join(', ');
 }
 
 function generateDemographics(scores) {
   let f=0, m=0, totalAge=0, totalGpa=0;
   scores.forEach(s => {
-    if(s.gender === "Kadın") f++; else if(s.gender === "Erkek") m++;
+    if(s.gender === "Female") f++; else if(s.gender === "Male") m++;
     totalAge += parseInt(s.age) || 0; totalGpa += parseFloat(s.gpa) || 0;
   });
   const n = scores.length || 1;
-  return `<span><b>Kadın:</b> ${f}</span> <span><b>Erkek:</b> ${m}</span> <span><b>Yaş Ort:</b> ${(totalAge/n).toFixed(1)}</span> <span><b>GANO Ort:</b> ${(totalGpa/n).toFixed(2)}</span>`;
+  return `<span><b>Female:</b> ${f}</span> <span><b>Male:</b> ${m}</span> <span><b>Avg Age:</b> ${(totalAge/n).toFixed(1)}</span> <span><b>Avg GPA:</b> ${(totalGpa/n).toFixed(2)}</span>`;
 }
 
 function renderReport(data,prefix){
@@ -588,22 +588,22 @@ function renderReport(data,prefix){
 
   const list=document.getElementById(prefix+'List'); list.innerHTML='';
   [...scores].sort((a,b)=>b.score1-a.score1).forEach(s=>{
-    const ageInfo = s.age && s.age !== "0" ? ` (${s.gender?s.gender.charAt(0):''}, Yaş:${s.age}, G:${s.gpa||''})` : '';
+    const ageInfo = s.age && s.age !== "0" ? ` (${s.gender?s.gender.charAt(0):''}, Age:${s.age}, GPA:${s.gpa||''})` : '';
     const score2Text = s.score2 !== undefined ? s.score2 : '-';
-    list.innerHTML+=`<div class="score-item"><div class="si-header"><span>${s.name} <span style="font-weight:normal;color:var(--muted);font-size:.75rem">${ageInfo}</span></span></div><div class="si-details"><span>Holistik: <b style="color:var(--ink)">${s.score1}/20</b></span><span>Kontrol L.: <b style="color:var(--green)">${score2Text}/20</b></span></div></div>`;
+    list.innerHTML+=`<div class="score-item"><div class="si-header"><span>${s.name} <span style="font-weight:normal;color:var(--muted);font-size:.75rem">${ageInfo}</span></span></div><div class="si-details"><span>Holistic: <b style="color:var(--ink)">${s.score1}/20</b></span><span>Checklist: <b style="color:var(--green)">${score2Text}/20</b></span></div></div>`;
   });
 }
 
 function copyReport(d){
   d=d||lastReport; if(!d) return;
-  const lines = [ `RAPOR — ${d.speaker}`, `Holistik Ort: ${d.stats.s1?d.stats.s1.mean:d.stats.mean} | Kontrol Ort: ${d.stats.s2?d.stats.s2.mean:'-'}`, ``, ...d.scores.map(s=>`${s.name} -> H: ${s.score1}, K: ${s.score2!==undefined?s.score2:'-'}`) ];
-  navigator.clipboard.writeText(lines.join('\n')).then(()=>showToast("Kopyalandı!"));
+  const lines = [ `REPORT — ${d.speaker}`, `Holistic Avg: ${d.stats.s1?d.stats.s1.mean:d.stats.mean} | Checklist Avg: ${d.stats.s2?d.stats.s2.mean:'-'}`, ``, ...d.scores.map(s=>`${s.name} -> H: ${s.score1}, C: ${s.score2!==undefined?s.score2:'-'}`) ];
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>showToast("Copied!"));
 }
 
 // ════ CSV/EXCEL OLUŞTURUCU ════
 // TÜRKIYE BÖLGE AYARLARI İÇİN VİRGÜL (,) YERİNE NOKTALI VİRGÜL (;) KULLANILDI
 function createCSVContent(data) {
-  let csv = "Öğrenci Adı;Puanlayıcı Adı-Soyadı;Cinsiyet;Yaş;GANO;Holistik Puan;Kontrol Listesi Puanı\n";
+  let csv = "Student Name;Scorer Full Name;Gender;Age;GPA;Holistic Score;Checklist Score\n";
   data.scores.forEach(s => {
     csv += `"${data.speaker}";"${s.name}";"${s.gender||''}";"${s.age||''}";"${s.gpa||''}";"${s.score1}";"${s.score2!==undefined?s.score2:''}"\n`;
   });
@@ -611,7 +611,7 @@ function createCSVContent(data) {
 }
 
 function triggerDownload(csvContent, fileName) {
-  // UTF-8 BOM eklenerek Excel'de Türkçe karakterlerin bozulması önlenir
+  // UTF-8 BOM eklenerek Excel'de karakterlerin bozulması önlenir
   const blob = new Blob(["\uFEFF"+csvContent], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
@@ -626,25 +626,25 @@ function downloadSingleReportCSV(isHistory = false) {
   const data = isHistory ? lastHistItem : lastReport;
   if(!data) return;
   const csv = createCSVContent(data);
-  triggerDownload(csv, `Rapor_${data.speaker.replace(/\s+/g, '_')}.csv`);
+  triggerDownload(csv, `Report_${data.speaker.replace(/\s+/g, '_')}.csv`);
 }
 
 function downloadAllHistoryCSV() {
-  if(!allHistory || allHistory.length === 0) { showToast("Geçmiş veri yok."); return; }
-  let csv = "Tarih;Öğrenci Adı;Puanlayıcı Adı-Soyadı;Cinsiyet;Yaş;GANO;Holistik Puan;Kontrol Listesi Puanı\n";
+  if(!allHistory || allHistory.length === 0) { showToast("No history data."); return; }
+  let csv = "Date;Student Name;Scorer Full Name;Gender;Age;GPA;Holistic Score;Checklist Score\n";
   allHistory.forEach(session => {
     session.scores.forEach(s => {
       csv += `"${session.date}";"${session.speaker}";"${s.name}";"${s.gender||''}";"${s.age||''}";"${s.gpa||''}";"${s.score1}";"${s.score2!==undefined?s.score2:''}"\n`;
     });
   });
-  triggerDownload(csv, `Tum_Gecmis_Raporlar.csv`);
+  triggerDownload(csv, `All_Past_Reports.csv`);
 }
 
 async function loadHistory(){
-  const el=document.getElementById('historyList'); el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted)">Yükleniyor...</div>';
+  const el=document.getElementById('historyList'); el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted)">Loading...</div>';
   try{
     const data=await api({action:'history'});
-    if(!data.history||data.history.length===0){ el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted)">Geçmiş yok.</div>'; return; }
+    if(!data.history||data.history.length===0){ el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted)">No history.</div>'; return; }
     allHistory = data.history;
     el.innerHTML='';
     
@@ -656,12 +656,12 @@ async function loadHistory(){
       <div class="history-item" onclick="showHistDetail(${index})">
         <div style="flex:1">
           <div style="font-weight:600">${item.speaker}</div>
-          <div style="font-size:.8rem;color:var(--muted);margin-top:.3rem">🗓️ ${item.date} | 👥 ${item.stats.n} Kişi | H. Ort: ${s1_m}</div>
+          <div style="font-size:.8rem;color:var(--muted);margin-top:.3rem">🗓️ ${item.date} | 👥 ${item.stats.n} People | H. Avg: ${s1_m}</div>
         </div>
-        <button class="btn btn-outline btn-sm" style="border-color:var(--accent); color:var(--accent)" onclick="event.stopPropagation(); deleteHistory('${item.sessionId}')">Sil</button>
+        <button class="btn btn-outline btn-sm" style="border-color:var(--accent); color:var(--accent)" onclick="event.stopPropagation(); deleteHistory('${item.sessionId}')">Delete</button>
       </div>`;
     });
-  }catch(e){ el.innerHTML='Yüklenemedi.'; }
+  }catch(e){ el.innerHTML='Could not load.'; }
 }
 
 function showHistDetail(index){ 
