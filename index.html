@@ -6,91 +6,63 @@
 <title>Öğretmen Adayı Puanlama Sistemi</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --ink: #1a1a2e; --paper: #f5f0e8; --accent: #c8410a;
-  --green: #2d6a4f; --muted: #7a7a8a; --border: #d9d2c4;
-  --card: #fff; --shadow: 0 2px 20px rgba(26,26,46,.09);
-}
+:root { --ink: #1a1a2e; --paper: #f5f0e8; --accent: #c8410a; --green: #2d6a4f; --muted: #7a7a8a; --border: #d9d2c4; --card: #fff; --shadow: 0 2px 20px rgba(26,26,46,.09); }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
-
-/* NAV */
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;padding-bottom:2rem}
 .nav{background:var(--ink);color:#fff;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:60px}
 .nav-brand{font-family:'DM Serif Display',serif;font-size:1.15rem}
 .nav-tabs{display:flex;gap:.2rem}
 .nav-tab{padding:.4rem 1rem;border-radius:6px;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s}
 .nav-tab.active,.nav-tab:hover{background:rgba(255,255,255,.14);color:#fff}
-
-/* STATUS */
 .statusbar{text-align:center;padding:.4rem 1rem;font-size:.82rem;font-weight:500;display:none}
-.statusbar.visible{display:block}
-.statusbar.open{background:var(--green);color:#fff}
-.statusbar.closed{background:var(--accent);color:#fff}
-.statusbar.waiting{background:#777;color:#fff}
-
-/* VIEWS & CARDS */
-.view{display:none;padding:2rem 1.25rem;max-width:700px;margin:0 auto}
+.statusbar.visible{display:block} .statusbar.open{background:var(--green);color:#fff} .statusbar.closed{background:var(--accent);color:#fff} .statusbar.waiting{background:#777;color:#fff}
+.view{display:none;padding:2rem 1.25rem;max-width:750px;margin:0 auto}
 .view.active{display:block}
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;box-shadow:var(--shadow);margin-bottom:1.25rem}
 .card-title{font-family:'DM Serif Display',serif;font-size:1.4rem;margin-bottom:.25rem}
 .card-sub{color:var(--muted);font-size:.85rem;margin-bottom:1.4rem}
-
-/* INPUTS & BUTTONS */
 label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem}
-input[type=text], input[type=password]{width:100%;padding:.7rem .95rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--ink);background:var(--paper);outline:none;transition:border-color .2s;margin-bottom:.9rem}
-input[type=text]:focus, input[type=password]:focus{border-color:var(--ink)}
+input[type=text], input[type=number], input[type=password], select{width:100%;padding:.7rem .95rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--ink);background:var(--paper);outline:none;transition:border-color .2s;margin-bottom:.9rem}
+input:focus, select:focus{border-color:var(--ink)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;padding:.7rem 1.5rem;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%}
-.btn-primary{background:var(--ink);color:#fff}
-.btn-primary:hover:not(:disabled){background:#2d2d4a;}
-.btn-danger{background:var(--accent);color:#fff}
-.btn-success{background:var(--green);color:#fff}
+.btn-primary{background:var(--ink);color:#fff} .btn-primary:hover:not(:disabled){background:#2d2d4a;}
+.btn-danger{background:var(--accent);color:#fff} .btn-success{background:var(--green);color:#fff}
 .btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--border)}
 .btn-sm{padding:.45rem 1rem;font-size:.82rem;width:auto}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-
-/* SLIDER (Aşama 1) */
 .score-display{text-align:center;margin:1rem 0 .4rem}
 .score-big{font-family:'DM Serif Display',serif;font-size:5rem;line-height:1;transition:color .2s}
 .score-range{color:var(--muted);font-size:.8rem;margin-top:.2rem}
 input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:var(--border);outline:none;margin:.9rem 0;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:transform .15s}
-
-/* CHECKLIST (Aşama 2 - Evet/Hayır Radyo Butonları) */
 .checklist-container { display:flex; flex-direction:column; gap:.6rem; margin-bottom:1.5rem; }
 .check-item { display:flex; flex-direction:column; gap:.8rem; background:var(--paper); padding:1.2rem; border-radius:10px; border:1px solid var(--border); }
 @media(min-width: 550px) { .check-item { flex-direction:row; align-items:center; justify-content:space-between; } }
 .check-item label { margin:0; color:var(--ink); font-weight:500; font-size:.92rem; text-transform:none; letter-spacing:normal; flex:1; cursor:pointer; }
 .radio-group { display: flex; gap: 0.5rem; flex-shrink: 0; }
 .radio-btn { padding: 0.5rem 1.2rem; border-radius: 8px; border: 1.5px solid var(--border); font-size: 0.85rem; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.2s; background: #fff; text-align:center; flex:1; }
-.radio-btn:hover { border-color: var(--muted); }
 .radio-btn.yes.active { background: var(--green); border-color: var(--green); color: #fff; }
 .radio-btn.no.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-/* STATS & REPORTS */
-.success-msg{text-align:center;padding:1.8rem 1rem;display:none}
-.success-icon{font-size:3.2rem;margin-bottom:.6rem}
+.success-msg{text-align:center;padding:1.8rem 1rem;display:none} .success-icon{font-size:3.2rem;margin-bottom:.6rem}
 .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem;margin:1rem 0}
 .stat-box{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center}
 .stat-label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.25rem}
 .stat-value{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--ink)}
 .score-item{display:flex;flex-direction:column;padding:.6rem .8rem;border-radius:8px;font-size:.88rem;margin-bottom:.4rem;background:var(--paper);border:1px solid var(--border)}
-.si-header{display:flex;justify-content:space-between;font-weight:600;margin-bottom:.3rem}
-.si-details{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
 .sbadge{display:inline-flex;align-items:center;gap:.4rem;background:var(--paper);border:1px solid var(--border);border-radius:8px;padding:.3rem .75rem;font-size:.8rem;color:var(--muted);margin-bottom:.9rem}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
-.dot.off{background:var(--muted);animation:none}
-
-/* OTHERS */
-.student-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem .85rem;border-radius:10px;border:1px solid var(--border);margin-bottom:.5rem;background:var(--paper);transition:box-shadow .2s}
-.student-row.active-session{border-color:var(--green);background:#f0faf5;box-shadow:0 0 0 2px rgba(45,106,79,.15)}
-.history-item{border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-bottom:.75rem;cursor:pointer;transition:box-shadow .2s}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite} .dot.off{background:var(--muted);animation:none}
+.student-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem .85rem;border-radius:10px;border:1px solid var(--border);margin-bottom:.5rem;background:var(--paper);}
+.student-row.active-session{border-color:var(--green);background:#f0faf5;}
+.history-item{border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-bottom:.75rem;cursor:pointer;background:var(--card)}
 hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 .spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;margin-right:.35rem}
-@keyframes rot{to{transform:rotate(360deg)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.toast{position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:.65rem 1.3rem;border-radius:10px;font-size:.85rem;font-weight:500;transition:transform .3s ease;z-index:9999;white-space:nowrap;pointer-events:none}
+@keyframes rot{to{transform:rotate(360deg)}} @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.toast{position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:.65rem 1.3rem;border-radius:10px;font-size:.85rem;font-weight:500;transition:transform .3s ease;z-index:9999;}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .waiting-screen{text-align:center;padding:2.5rem 1rem}
+.demo-box { background:#f9f9f9; padding:1rem; border-radius:10px; margin-top:.5rem; font-size:.85rem;}
+.demo-box span { display:inline-block; margin-right:1rem; margin-bottom:.5rem; }
+.edit-list-item { display:flex; gap:.5rem; margin-bottom:.5rem; }
 </style>
 </head>
 <body>
@@ -108,11 +80,26 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 
   <div id="scorerLoginScreen">
     <div class="card">
-      <div class="card-title">Hoş geldiniz</div>
-      <div class="card-sub">Adınızı girerek sisteme katılın. Öğretmen oturum açtığında otomatik puanlayabilirsiniz.</div>
+      <div class="card-title">Sisteme Katılın</div>
+      <div class="card-sub">Lütfen değerlendirme öncesi bilgilerinizi eksiksiz girin. Veriler karşılaştırmalı analiz için kullanılacaktır.</div>
+      
       <label>Adınız ve Soyadınız</label>
-      <input type="text" id="scorerName" placeholder="Örn: Ahmet Yılmaz" onkeydown="if(event.key==='Enter')loginScorer()"/>
-      <button class="btn btn-primary" onclick="loginScorer()">Sisteme Gir →</button>
+      <input type="text" id="scorerName" placeholder="Örn: Ahmet Yılmaz">
+      
+      <label>Cinsiyetiniz</label>
+      <select id="scorerGender">
+        <option value="">Seçiniz...</option>
+        <option value="Kadın">Kadın</option>
+        <option value="Erkek">Erkek</option>
+      </select>
+      
+      <label>Yaşınız</label>
+      <input type="number" id="scorerAge" placeholder="Örn: 21">
+      
+      <label>Genel Not Ortalaması (GANO)</label>
+      <input type="number" step="0.01" id="scorerGpa" placeholder="Örn: 3.20">
+      
+      <button class="btn btn-primary" onclick="loginScorer()" style="margin-top:1rem">Sisteme Gir →</button>
     </div>
   </div>
 
@@ -123,6 +110,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
         <h3>Oturum Bekleniyor</h3>
         <p style="color:var(--muted);font-size:.88rem">Öğretmen bir aday için oturum açtığında burada görünecek.</p>
         <p style="margin-top:.75rem;font-size:.8rem;color:var(--muted)" id="scorerWelcomeName"></p>
+        <button class="btn btn-outline btn-sm" style="margin-top:1.5rem" onclick="logoutScorer()">Çıkış Yap / Bilgileri Güncelle</button>
       </div>
     </div>
 
@@ -143,9 +131,8 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
       </div>
 
       <div id="scoringStep2" style="display:none">
-        <div class="card-sub">Aşama 2: Gözlemlediğiniz maddeleri işaretleyin.</div>
-        <div class="checklist-container" id="checklist">
-          </div>
+        <div class="card-sub">Aşama 2: Adayın performansına göre aşağıdaki maddeleri işaretleyin.</div>
+        <div class="checklist-container" id="checklist"></div>
         <hr>
         <button class="btn btn-success" id="submitBtn" onclick="submitScores()">✓ Değerlendirmeyi Gönder</button>
       </div>
@@ -171,8 +158,9 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
   </div>
 
   <div id="teacherPanel" style="display:none">
+    
     <div class="card">
-      <div class="card-title">Oturum Yönetimi</div>
+      <div class="card-title">Aday & Oturum Yönetimi</div>
       <div style="display:flex;gap:.5rem;margin-bottom:1rem;margin-top:1rem">
         <input type="text" id="newStudentName" placeholder="Aday adı soyadı ekle…" style="margin-bottom:0;flex:1" onkeydown="if(event.key==='Enter')addStudent()"/>
         <button class="btn btn-outline btn-sm" onclick="addStudent()">+ Ekle</button>
@@ -180,10 +168,10 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
       <div id="studentList"></div>
     </div>
 
-    <div class="card" id="activeSessionInfo" style="display:none">
+    <div class="card" id="activeSessionInfo" style="display:none; border-color:var(--green)">
       <div class="sbadge"><div class="dot" id="teacherDot"></div><span id="teacherBadgeTxt">Oturum aktif</span></div>
       <div class="card-title" id="activeSessionSpeaker">—</div>
-      <div id="activeScoreCount" style="color:var(--muted);font-size:.88rem;margin-bottom:1rem">Henüz puan gelmedi.</div>
+      <div id="activeScoreCount" style="color:var(--muted);font-size:.88rem;margin-bottom:1rem">Henüz değerlendirme gelmedi.</div>
       <button class="btn btn-danger" id="closeBtn" onclick="closeSession()">■ Oturumu Kapat ve Raporu Göster</button>
     </div>
 
@@ -191,7 +179,9 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
       <div class="card-title">📊 Kıyaslamalı Rapor</div>
       <div class="card-sub" id="reportSpeaker"></div>
       
-      <div style="font-weight:bold; margin-top:1rem; font-size:.9rem; color:var(--accent)">Holistik Değerlendirme (Aşama 1)</div>
+      <div class="demo-box" id="rDemoBox"></div>
+
+      <div style="font-weight:bold; margin-top:1.5rem; font-size:.9rem; color:var(--accent)">Holistik Değerlendirme (Aşama 1)</div>
       <div class="stat-grid" style="margin-top:.5rem">
         <div class="stat-box"><div class="stat-label">Ortalama</div><div class="stat-value" id="rMean1">—</div></div>
         <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="rStd1">—</div></div>
@@ -203,22 +193,43 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
         <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="rStd2">—</div></div>
       </div>
 
-      <div style="margin:1.5rem 0 .5rem; font-weight:bold; font-size:.85rem; color:var(--muted)">BİREYSEL PUANLAR (<span id="rCount">0</span> Kişi)</div>
+      <div style="margin:1.5rem 0 .5rem; font-weight:bold; font-size:.85rem; color:var(--muted)">BİREYSEL DEĞERLENDİRMELER (<span id="rCount">0</span> Kişi)</div>
       <div id="rList"></div>
       <hr>
-      <button class="btn btn-outline" onclick="copyReport()">📋 Raporu Kopyala</button>
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="copyReport()">📋 Kopyala</button>
+        <button class="btn btn-success" onclick="downloadSingleReportCSV()">📥 Excel (CSV) İndir</button>
+      </div>
     </div>
 
     <div class="card">
-      <div class="card-title">Geçmiş Oturumlar</div>
+      <div class="card-title">Kontrol Listesi Yönetimi</div>
+      <div class="card-sub">Puanlayıcılara gidecek soruları buradan düzenleyebilirsiniz. <br><small style="color:var(--accent)">(Değişiklikler bir sonraki oturumda geçerli olur.)</small></div>
+      <div id="teacherChecklistContainer"></div>
+      <button class="btn btn-outline btn-sm" style="margin-top:.5rem" onclick="addChecklistItem()">+ Yeni Madde Ekle</button>
+      <hr>
+      <button class="btn btn-primary" onclick="saveChecklistToDB()">💾 Listeyi Sunucuya Kaydet</button>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.5rem">
+        <div class="card-title" style="margin:0">Geçmiş Oturumlar</div>
+        <button class="btn btn-outline btn-sm" onclick="downloadAllHistoryCSV()">Tümünü İndir 📥</button>
+      </div>
       <div id="historyList"></div>
     </div>
     
     <div class="card" id="histDetailCard" style="display:none">
-      <button class="btn btn-outline" style="margin-bottom:1rem" onclick="closeHistDetail()">← Geri</button>
+      <button class="btn btn-outline btn-sm" style="margin-bottom:1rem" onclick="closeHistDetail()">← Geri Dön</button>
       <div class="card-title" id="hdTitle"></div><div class="card-sub" id="hdDate"></div>
-      <div class="stat-grid"><div class="stat-box"><div class="stat-label">Holistik Ort.</div><div class="stat-value" id="hdMean1">—</div></div><div class="stat-box"><div class="stat-label">Kontrol Ort.</div><div class="stat-value" id="hdMean2">—</div></div></div>
+      <div class="demo-box" id="hdDemoBox"></div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-label">Holistik Ort.</div><div class="stat-value" id="hdMean1">—</div></div>
+        <div class="stat-box"><div class="stat-label">Kontrol Ort.</div><div class="stat-value" id="hdMean2">—</div></div>
+      </div>
       <div id="hdList"></div>
+      <hr>
+      <button class="btn btn-success" onclick="downloadSingleReportCSV(true)">📥 Bu Oturumu Excel (CSV) İndir</button>
     </div>
   </div>
 </div>
@@ -226,59 +237,64 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════
-// YENİ GAS API LİNKİNİZ EKLENDİ
-// ══════════════════════════════════════════════════
-const API = "https://script.google.com/macros/s/AKfycbzRhhOpD1zErfp_XAzEITghkU9HsXU6kiugO8pHPlWlAIgqPAxJX1eaPKexGTfoqkFB/exec";
+// ==========================================
+// YENİ API LİNKİNİZ
+const API = "https://script.google.com/macros/s/AKfycbzOfTepmgkaW7yiz1mewcc7us1VAwKbCMyo7C-taK1qAdzpE-uHQe_O9h4qKqJD7EET/exec";
+// ==========================================
 
-// KONTROL LİSTESİ MADDELERİ (İstediğiniz gibi değiştirebilirsiniz)
-const checklistItems = [
-  "1. Konuya uygun, ilgi çekici bir giriş yaptı.",
-  "2. Ses tonunu, duraklamaları ve vurguları etkili kullandı.",
-  "3. Beden dilini (jest ve mimikler) doğru kullandı.",
-  "4. Dinleyicilerle etkili göz teması kurdu.",
-  "5. Konuya hakimiyetini hissettirdi.",
-  "6. Akıcı, anlaşılır ve kurallı bir Türkçe kullandı.",
-  "7. Zamanı verimli planladı ve sınırlarına uydu.",
-  "8. Dikkati dağıtacak gereksiz tekrarlardan kaçındı.",
-  "9. Özgüvenli ve rahat bir duruş sergiledi.",
-  "10. Konuyu toparlayan etkili bir özetleme/kapanış yaptı."
-];
-
-// ══ STATE ══
-let myName = localStorage.getItem("scorerName") || "";
-let scorerVoted = false;
-let currentSpeaker = "";
+let myScorerData = JSON.parse(localStorage.getItem("scorerData") || "null");
+let scorerVoted = false; let currentSpeaker = "";
 let scorerPollId = null, teacherPollId = null;
-let lastReport = null, lastHistItem = null;
-let students = []; 
-let activeStudentIdx = -1;
+let lastReport = null, lastHistItem = null, allHistory = [];
+let students = []; let activeStudentIdx = -1;
 let savedPass = localStorage.getItem("teacherPass") || "";
-let tempScore1 = 0; // Holistik puanı geçici tutacağımız yer
+let tempScore1 = 0; 
+let activeChecklist = []; // Sunucudan gelen maddeler
 
-// ══ UTILS ══
 function showToast(msg, ms=2800){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),ms); }
 function showView(v){ document.querySelectorAll('.view').forEach(el=>el.classList.remove('active')); document.getElementById('view-'+v).classList.add('active'); document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',(i===0&&v==='scorer')||(i===1&&v==='teacher'))); }
 function setStatusBar(state,text){ const sb=document.getElementById('statusBar'); if(!state){sb.className='statusbar';return;} sb.className='statusbar visible '+state; sb.textContent=text; }
-
-// BAĞLANTI HATASINI ÇÖZEN GÜNCELLENMİŞ FETCH SORGUSU
-async function api(params){ 
-  const qs = new URLSearchParams(params).toString(); 
-  const res = await fetch(API + '?' + qs); 
-  if(!res.ok) throw new Error('HTTP '+res.status); 
-  return res.json(); 
-}
-
+async function api(params){ const qs = new URLSearchParams(params).toString(); const res = await fetch(API + '?' + qs); if(!res.ok) throw new Error('HTTP '+res.status); return res.json(); }
 function updateSlider(v){ const el=document.getElementById('scoreDisplay'); if(el){ el.textContent=v; el.style.color=(v/20)>.65?'#1a6640':(v/20)>.35?'#7a5a10':'#c8410a'; } }
 
-// ══ SCORER ══
-function renderChecklist() {
+// ════════ SCORER FONKSİYONLARI ════════
+function initScorer(){ 
+  if(myScorerData && myScorerData.name){ 
+    document.getElementById('scorerLoginScreen').style.display='none'; 
+    document.getElementById('scorerMainScreen').style.display='block'; 
+    document.getElementById('scorerWelcomeName').textContent='Hoş geldin, '+myScorerData.name+' 👋'; 
+    startScorerPoll(); 
+  } 
+}
+
+function loginScorer(){ 
+  const name = document.getElementById('scorerName').value.trim();
+  const gender = document.getElementById('scorerGender').value;
+  const age = document.getElementById('scorerAge').value.trim();
+  const gpa = document.getElementById('scorerGpa').value.trim();
+  
+  if(!name || !gender || !age || !gpa){ showToast("Lütfen tüm alanları doldurun."); return; }
+  
+  myScorerData = { name: name, gender: gender, age: age, gpa: gpa };
+  localStorage.setItem("scorerData", JSON.stringify(myScorerData)); 
+  initScorer(); 
+}
+
+function logoutScorer() {
+  localStorage.removeItem("scorerData");
+  myScorerData = null;
+  if(scorerPollId) clearInterval(scorerPollId);
+  document.getElementById('scorerLoginScreen').style.display='block'; 
+  document.getElementById('scorerMainScreen').style.display='none'; 
+}
+
+function renderScorerChecklist(list) {
   const container = document.getElementById('checklist');
   container.innerHTML = '';
-  checklistItems.forEach((item, index) => {
+  list.forEach((item, index) => {
     container.innerHTML += `
       <div class="check-item" id="item-${index}">
-        <label onclick="selectCheckRadio(${index}, 'yes')">${item}</label>
+        <label onclick="selectCheckRadio(${index}, 'yes')">${index+1}. ${item}</label>
         <div class="radio-group">
           <div class="radio-btn yes" onclick="selectCheckRadio(${index}, 'yes')">Evet</div>
           <div class="radio-btn no" onclick="selectCheckRadio(${index}, 'no')">Hayır</div>
@@ -291,23 +307,20 @@ function selectCheckRadio(index, choice) {
   const itemDiv = document.getElementById(`item-${index}`);
   const yesBtn = itemDiv.querySelector('.radio-btn.yes');
   const noBtn = itemDiv.querySelector('.radio-btn.no');
-  
-  if (choice === 'yes') {
-    yesBtn.classList.add('active');
-    noBtn.classList.remove('active');
-  } else {
-    noBtn.classList.add('active');
-    yesBtn.classList.remove('active');
-  }
+  if (choice === 'yes') { yesBtn.classList.add('active'); noBtn.classList.remove('active'); } 
+  else { noBtn.classList.add('active'); yesBtn.classList.remove('active'); }
 }
 
-function initScorer(){ if(myName){ document.getElementById('scorerLoginScreen').style.display='none'; document.getElementById('scorerMainScreen').style.display='block'; document.getElementById('scorerWelcomeName').textContent='Hoş geldin, '+myName+' 👋'; startScorerPoll(); } renderChecklist(); }
-function loginScorer(){ const name=document.getElementById('scorerName').value.trim(); if(!name){showToast("Lütfen adınızı girin.");return;} myName=name; localStorage.setItem("scorerName",name); initScorer(); }
-function startScorerPoll(){ if(scorerPollId) clearInterval(scorerPollId); checkScorerStatus(); scorerPollId=setInterval(checkScorerStatus,2000); }
+function startScorerPoll(){ if(scorerPollId) clearInterval(scorerPollId); checkScorerStatus(); scorerPollId=setInterval(checkScorerStatus,3000); }
 
 async function checkScorerStatus(){
   try{
     const data=await api({action:'status'});
+    if(JSON.stringify(activeChecklist) !== JSON.stringify(data.checklist)) {
+      activeChecklist = data.checklist;
+      renderScorerChecklist(activeChecklist);
+    }
+
     if(data.session_active){
       if(data.speaker !== currentSpeaker){ currentSpeaker=data.speaker; scorerVoted=false; openScoringUI(data.speaker); } 
       else if(scorerVoted){ showScorerVotedWait(); } 
@@ -324,12 +337,8 @@ function showScorerWait(){ document.getElementById('scorerWaitCard').style.displ
 function showScorerActiveCard(){ document.getElementById('scorerWaitCard').style.display='none'; document.getElementById('scorerActiveCard').style.display='block'; }
 
 function openScoringUI(speaker){
-  showScorerActiveCard();
-  document.getElementById('scoreDot').classList.remove('off');
-  document.getElementById('scorerSpeakerTitle').textContent=speaker;
-  document.getElementById('scoringStep1').style.display='block';
-  document.getElementById('scoringStep2').style.display='none';
-  document.getElementById('successMsg').style.display='none';
+  showScorerActiveCard(); document.getElementById('scoreDot').classList.remove('off'); document.getElementById('scorerSpeakerTitle').textContent=speaker;
+  document.getElementById('scoringStep1').style.display='block'; document.getElementById('scoringStep2').style.display='none'; document.getElementById('successMsg').style.display='none';
   const slider=document.getElementById('scoreSlider'); if(slider) slider.value=10; updateSlider(10);
   document.querySelectorAll('.checklist-container .radio-btn').forEach(btn => btn.classList.remove('active'));
   const btn=document.getElementById('submitBtn'); if(btn){btn.disabled=false;btn.textContent='✓ Değerlendirmeyi Gönder';}
@@ -343,48 +352,42 @@ function goToStep2() {
 }
 
 function showScorerClosed(){
-  document.getElementById('scoreDot').classList.add('off');
-  document.getElementById('scoringStep1').style.display='none'; document.getElementById('scoringStep2').style.display='none';
+  document.getElementById('scoreDot').classList.add('off'); document.getElementById('scoringStep1').style.display='none'; document.getElementById('scoringStep2').style.display='none';
   document.getElementById('successIcon').textContent='⛔'; document.getElementById('successTitle').textContent='Oturum kapandı';
   document.getElementById('successDetail').textContent='Değerlendirme süresi doldu.'; document.getElementById('successMsg').style.display='block'; setStatusBar('closed','⛔ Oturum kapatıldı');
 }
 function showScorerVotedWait(){ showScorerActiveCard(); document.getElementById('scoringStep1').style.display='none'; document.getElementById('scoringStep2').style.display='none'; document.getElementById('successMsg').style.display='block'; }
 
 async function submitScores(){
-  // Bütün maddelerin işaretlenip işaretlenmediğini kontrol et
-  const totalItems = document.querySelectorAll('.checklist-container .check-item').length;
+  const totalItems = activeChecklist.length;
   const answeredItems = document.querySelectorAll('.checklist-container .radio-btn.active').length;
-  
-  if (answeredItems < totalItems) {
-    showToast("Lütfen tüm maddeleri (Evet/Hayır) işaretleyin.");
-    return;
-  }
+  if (answeredItems < totalItems) { showToast("Lütfen tüm maddeleri işaretleyin."); return; }
 
   const s1 = tempScore1;
-  const activeCount = document.querySelectorAll('.checklist-container .radio-btn.yes.active').length;
-  const s2 = activeCount * 2;
+  const yesCount = document.querySelectorAll('.checklist-container .radio-btn.yes.active').length;
+  
+  // FORMÜL: (Evet Sayısı / Toplam Soru Sayısı) * 20
+  const s2 = Math.round((yesCount / totalItems) * 20);
   
   const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.innerHTML='<span class="spin"></span>Gönderiliyor…';
   scorerVoted=true;
-  
-  // Ekranda verilen puan gösterilmeyecek
-  document.getElementById('successDetail').innerHTML=`Değerlendirmeleriniz sisteme başarıyla işlendi.`;
+  document.getElementById('successDetail').innerHTML=`Katkınız için teşekkürler.`;
   document.getElementById('successIcon').textContent='✅'; document.getElementById('successTitle').textContent='Değerlendirme Alındı!';
   document.getElementById('scoringStep2').style.display='none'; document.getElementById('successMsg').style.display='block';
 
   try{
-    const data=await api({action:'score', rater:myName, score1:s1, score2:s2});
+    const data=await api({ action:'score', rater:myScorerData.name, gender:myScorerData.gender, age:myScorerData.age, gpa:myScorerData.gpa, score1:s1, score2:s2 });
     if(data.status!=='ok' && data.status!=='duplicate'){
-      scorerVoted=false; document.getElementById('scoringStep2').style.display='block'; document.getElementById('successMsg').style.display='none'; btn.disabled=false; btn.textContent='✓ Değerlendirmeyi Gönder'; showToast(data.message||"Hata oluştu.");
+      scorerVoted=false; document.getElementById('scoringStep2').style.display='block'; document.getElementById('successMsg').style.display='none'; btn.disabled=false; btn.textContent='✓ Değerlendirmeyi Gönder'; showToast(data.message||"Hata.");
     }
   }catch(e){ scorerVoted=false; document.getElementById('scoringStep2').style.display='block'; document.getElementById('successMsg').style.display='none'; btn.disabled=false; btn.textContent='✓ Değerlendirmeyi Gönder'; showToast("Bağlantı hatası."); }
 }
 
-// ══ TEACHER ══
+// ════════ TEACHER FONKSİYONLARI ════════
 async function loginTeacher(){
   const pass = document.getElementById('teacherPass').value.trim();
   if(!pass){showToast("Şifre girin!");return;}
-  const btn = document.querySelector('#teacherLoginCard .btn-primary'); btn.disabled=true; btn.textContent="Kontrol ediliyor...";
+  const btn = document.querySelector('#teacherLoginCard .btn-primary'); btn.disabled=true; btn.textContent="Bekleyin...";
   try {
     const data = await api({action: 'verify_pass', pass: pass});
     if(data.status === 'ok') { localStorage.setItem("teacherPass", pass); savedPass = pass; showTeacherPanel(); } 
@@ -399,22 +402,24 @@ async function restoreTeacherSession(){
   try{
     const data=await api({action:'status'});
     if(data.students) { students = data.students; renderStudentList(); }
+    if(data.checklist) { renderTeacherChecklist(data.checklist); }
+
     if(data.session_active){
       activeStudentIdx = students.indexOf(data.speaker);
       document.getElementById('activeSessionInfo').style.display='block'; document.getElementById('activeSessionSpeaker').textContent=data.speaker;
-      document.getElementById('activeScoreCount').textContent = data.score_count===0 ? 'Henüz değerlendirme gelmedi.' : data.score_count+' değerlendirme geldi.';
+      document.getElementById('activeScoreCount').textContent = data.score_count===0 ? 'Bekleniyor...' : data.score_count+' değerlendirme geldi.';
       document.getElementById('teacherDot').classList.remove('off'); setStatusBar('open','🟢 Aktif oturum — değerlendirme açık');
     } else { activeStudentIdx=-1; document.getElementById('activeSessionInfo').style.display='none'; setStatusBar(null); renderStudentList(); }
   }catch(e){}
 }
 
 async function addStudent(){
-  const inp=document.getElementById('newStudentName'); const name=inp.value.trim(); if(!name){showToast("Ad girin.");return;}
+  const inp=document.getElementById('newStudentName'); const name=inp.value.trim(); if(!name) return;
   const btn = inp.nextElementSibling; btn.disabled = true; btn.textContent = "...";
   try {
     const data = await api({action: 'add_student', student: name, pass: savedPass});
-    if(data.status === 'ok') { students = data.students; inp.value = ''; renderStudentList(); showToast("Aday eklendi."); } else { showToast("Yetki hatası."); }
-  } catch(e) { showToast("Bağlantı hatası!"); }
+    if(data.status === 'ok') { students = data.students; inp.value = ''; renderStudentList(); showToast("Eklendi."); }
+  } catch(e) { showToast("Hata!"); }
   btn.disabled = false; btn.textContent = "+ Ekle";
 }
 
@@ -423,7 +428,7 @@ async function removeStudent(i){
   try {
     const data = await api({action: 'remove_student', student: students[i], pass: savedPass});
     if(data.status === 'ok') { students = data.students; if(activeStudentIdx > i) activeStudentIdx--; renderStudentList(); }
-  } catch(e) { showToast("Bağlantı hatası!"); }
+  } catch(e) { showToast("Hata!"); }
 }
 
 function renderStudentList(){
@@ -441,8 +446,7 @@ async function startSession(idx){
   try{
     const data=await api({action:'start', speaker:speaker, pass:savedPass});
     if(data.status==='ok'){ activeStudentIdx=idx; renderStudentList(); document.getElementById('activeSessionInfo').style.display='block'; document.getElementById('activeSessionSpeaker').textContent=speaker; document.getElementById('activeScoreCount').textContent='Bekleniyor...'; document.getElementById('reportCard').style.display='none'; document.getElementById('teacherDot').classList.remove('off'); setStatusBar('open','🟢 Aktif oturum — değerlendirme açık'); } 
-    else { showToast("Hata oluştu."); renderStudentList(); }
-  }catch(e){ showToast("Bağlantı hatası!"); renderStudentList(); }
+  }catch(e){ showToast("Hata!"); renderStudentList(); }
 }
 
 async function closeSession(){
@@ -450,9 +454,9 @@ async function closeSession(){
   try{
     const data=await api({action:'close', pass:savedPass});
     activeStudentIdx=-1; renderStudentList(); document.getElementById('activeSessionInfo').style.display='none'; document.getElementById('teacherDot').classList.add('off'); setStatusBar('closed','⛔ Oturum kapatıldı');
-    if(!data.scores||data.scores.length===0){ showToast("Hiç değerlendirme girilmedi!"); setStatusBar(null); } 
+    if(!data.scores||data.scores.length===0){ showToast("Değerlendirme girilmedi."); setStatusBar(null); } 
     else { renderReport(data,'r'); document.getElementById('reportCard').style.display='block'; }
-    loadHistory();
+    loadHistory(); btn.disabled=false; btn.textContent='■ Oturumu Kapat ve Raporu Göster';
   }catch(e){ showToast("Hata!"); btn.disabled=false; btn.textContent='■ Oturumu Kapat'; }
 }
 
@@ -464,28 +468,118 @@ function startTeacherPoll(){
       if(data.students && JSON.stringify(students) !== JSON.stringify(data.students)) { students = data.students; renderStudentList(); }
       if(activeStudentIdx===-1) return;
       if(data.session_active){
-        const n=data.score_count; const txt=n===0?'Bekleniyor...':n+' kişi değerlendirdi.';
-        document.getElementById('activeScoreCount').textContent=txt; const sc=document.getElementById('scount-'+activeStudentIdx); if(sc&&n>0) sc.textContent=n+' evrak';
+        const n=data.score_count; document.getElementById('activeScoreCount').textContent = n===0?'Bekleniyor...':n+' kişi değerlendirdi.';
+        const sc=document.getElementById('scount-'+activeStudentIdx); if(sc&&n>0) sc.textContent=n+' evrak';
       }
     }catch(e){}
-  },2000);
+  },3000);
+}
+
+// ════ KONTROL LİSTESİ YÖNETİMİ ════
+function renderTeacherChecklist(list) {
+  const container = document.getElementById('teacherChecklistContainer');
+  container.innerHTML = '';
+  list.forEach((item, index) => {
+    container.innerHTML += `
+      <div class="edit-list-item">
+        <input type="text" class="t-check-input" value="${item}" style="margin:0">
+        <button class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Sil</button>
+      </div>`;
+  });
+}
+function addChecklistItem() {
+  const container = document.getElementById('teacherChecklistContainer');
+  container.innerHTML += `<div class="edit-list-item"><input type="text" class="t-check-input" placeholder="Yeni madde..." style="margin:0"><button class="btn btn-outline btn-sm" onclick="this.parentElement.remove()">Sil</button></div>`;
+}
+async function saveChecklistToDB() {
+  const inputs = document.querySelectorAll('.t-check-input');
+  const newList = Array.from(inputs).map(inp => inp.value.trim()).filter(val => val !== "");
+  if(newList.length === 0) { showToast("Liste boş olamaz."); return; }
+  try {
+    const data = await api({ action: 'save_checklist', pass: savedPass, listData: JSON.stringify(newList) });
+    if(data.status === 'ok') showToast("Liste güncellendi."); else showToast("Hata!");
+  } catch(e) { showToast("Bağlantı hatası."); }
+}
+
+
+// ════ RAPOR VE İNDİRME ════
+function generateDemographics(scores) {
+  let f=0, m=0, totalAge=0, totalGpa=0;
+  scores.forEach(s => {
+    if(s.gender === "Kadın") f++; else if(s.gender === "Erkek") m++;
+    totalAge += parseInt(s.age) || 0; totalGpa += parseFloat(s.gpa) || 0;
+  });
+  const n = scores.length || 1;
+  return `<span><b>Kadın:</b> ${f}</span> <span><b>Erkek:</b> ${m}</span> <span><b>Yaş Ort:</b> ${(totalAge/n).toFixed(1)}</span> <span><b>GANO Ort:</b> ${(totalGpa/n).toFixed(2)}</span>`;
 }
 
 function renderReport(data,prefix){
-  const{speaker,scores,stats}=data; lastReport=data;
-  document.getElementById(prefix+'Mean1').textContent=stats.s1.mean; document.getElementById(prefix+'Std1').textContent=stats.s1.std;
-  document.getElementById(prefix+'Mean2').textContent=stats.s2.mean; document.getElementById(prefix+'Std2').textContent=stats.s2.std;
-  if(prefix==='r') { document.getElementById('reportSpeaker').textContent=speaker; document.getElementById('rCount').textContent=stats.n; }
+  const{speaker,scores,stats}=data; 
+  if(prefix==='r') lastReport=data; else lastHistItem=data;
+  
+  // HATA ÖNLEYİCİ: Eski verilerde stats.s1 olmayabilir, geriye dönük uyumluluk
+  const s1_mean = stats.s1 ? stats.s1.mean : (stats.mean || '-');
+  const s1_std = stats.s1 ? stats.s1.std : (stats.std || '-');
+  const s2_mean = stats.s2 ? stats.s2.mean : '-';
+  const s2_std = stats.s2 ? stats.s2.std : '-';
+
+  document.getElementById(prefix+'Mean1').textContent = s1_mean; 
+  document.getElementById(prefix+'Std1').textContent = s1_std;
+  document.getElementById(prefix+'Mean2').textContent = s2_mean; 
+  document.getElementById(prefix+'Std2').textContent = s2_std;
+  
+  if(prefix==='r') { document.getElementById('reportSpeaker').textContent=speaker; document.getElementById('rCount').textContent=stats.n; document.getElementById('rDemoBox').innerHTML = generateDemographics(scores); }
+  else { document.getElementById('hdDemoBox').innerHTML = generateDemographics(scores); }
+
   const list=document.getElementById(prefix+'List'); list.innerHTML='';
   [...scores].sort((a,b)=>b.score1-a.score1).forEach(s=>{
-    list.innerHTML+=`<div class="score-item"><div class="si-header"><span>${s.name}</span></div><div class="si-details"><span>Holistik: <b style="color:var(--ink)">${s.score1}/20</b></span><span>Kontrol L.: <b style="color:var(--green)">${s.score2}/20</b></span></div></div>`;
+    const ageInfo = s.age && s.age !== "0" ? ` (${s.gender?s.gender.charAt(0):''}, ${s.age}, ${s.gpa||''})` : '';
+    const score2Text = s.score2 !== undefined ? s.score2 : '-';
+    list.innerHTML+=`<div class="score-item"><div class="si-header"><span>${s.name} <span style="font-weight:normal;color:var(--muted);font-size:.75rem">${ageInfo}</span></span></div><div class="si-details"><span>Holistik: <b style="color:var(--ink)">${s.score1}/20</b></span><span>Kontrol L.: <b style="color:var(--green)">${score2Text}/20</b></span></div></div>`;
   });
 }
 
 function copyReport(d){
   d=d||lastReport; if(!d) return;
-  const lines = [ `RAPOR — ${d.speaker}`, `Holistik Ort: ${d.stats.s1.mean} | Kontrol Ort: ${d.stats.s2.mean}`, ``, ...d.scores.map(s=>`${s.name} -> H: ${s.score1}, K: ${s.score2}`) ];
+  const lines = [ `RAPOR — ${d.speaker}`, `Holistik Ort: ${d.stats.s1?d.stats.s1.mean:d.stats.mean} | Kontrol Ort: ${d.stats.s2?d.stats.s2.mean:'-'}`, ``, ...d.scores.map(s=>`${s.name} -> H: ${s.score1}, K: ${s.score2!==undefined?s.score2:'-'}`) ];
   navigator.clipboard.writeText(lines.join('\n')).then(()=>showToast("Kopyalandı!"));
+}
+
+function createCSVContent(data) {
+  let csv = "Oturum Adayi,Puanlayici,Cinsiyet,Yas,GANO,Holistik Puan,Kontrol Puan\n";
+  data.scores.forEach(s => {
+    csv += `"${data.speaker}","${s.name}","${s.gender||''}","${s.age||''}","${s.gpa||''}","${s.score1}","${s.score2!==undefined?s.score2:''}"\n`;
+  });
+  return csv;
+}
+
+function triggerDownload(csvContent, fileName) {
+  const blob = new Blob(["\uFEFF"+csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function downloadSingleReportCSV(isHistory = false) {
+  const data = isHistory ? lastHistItem : lastReport;
+  if(!data) return;
+  const csv = createCSVContent(data);
+  triggerDownload(csv, `Rapor_${data.speaker.replace(/\s+/g, '_')}.csv`);
+}
+
+function downloadAllHistoryCSV() {
+  if(!allHistory || allHistory.length === 0) { showToast("Geçmiş veri yok."); return; }
+  let csv = "Oturum Adayi,Tarih,Puanlayici,Cinsiyet,Yas,GANO,Holistik Puan,Kontrol Puan\n";
+  allHistory.forEach(session => {
+    session.scores.forEach(s => {
+      csv += `"${session.speaker}","${session.date}","${s.name}","${s.gender||''}","${s.age||''}","${s.gpa||''}","${s.score1}","${s.score2!==undefined?s.score2:''}"\n`;
+    });
+  });
+  triggerDownload(csv, `Tum_Gecmis_Raporlar.csv`);
 }
 
 async function loadHistory(){
@@ -493,14 +587,24 @@ async function loadHistory(){
   try{
     const data=await api({action:'history'});
     if(!data.history||data.history.length===0){ el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--muted)">Geçmiş yok.</div>'; return; }
+    allHistory = data.history;
     el.innerHTML='';
     data.history.forEach(item=>{
-      el.innerHTML+=`<div class="history-item" onclick='showHistDetail(${JSON.stringify(item).replace(/'/g,"&#39;")})'><div style="font-weight:600">${item.speaker} <span style="font-weight:normal;font-size:.75rem;color:var(--muted);float:right">${item.date}</span></div><div style="font-size:.8rem;color:var(--muted);margin-top:.3rem">👥 ${item.stats.n} | H. Ort: ${item.stats.s1.mean} | K. Ort: ${item.stats.s2.mean}</div></div>`;
+      const s1_m = item.stats.s1 ? item.stats.s1.mean : (item.stats.mean||'-');
+      const s2_m = item.stats.s2 ? item.stats.s2.mean : '-';
+      el.innerHTML+=`<div class="history-item" onclick='showHistDetail(${JSON.stringify(item).replace(/'/g,"&#39;")})'><div style="font-weight:600">${item.speaker} <span style="font-weight:normal;font-size:.75rem;color:var(--muted);float:right">${item.date}</span></div><div style="font-size:.8rem;color:var(--muted);margin-top:.3rem">👥 ${item.stats.n} | H. Ort: ${s1_m} | K. Ort: ${s2_m}</div></div>`;
     });
   }catch(e){ el.innerHTML='Yüklenemedi.'; }
 }
 
-function showHistDetail(item){ lastHistItem=item; document.getElementById('histDetailCard').style.display='block'; document.getElementById('hdTitle').textContent=item.speaker; document.getElementById('hdDate').textContent=item.date; renderReport({speaker:item.speaker,scores:item.scores,stats:item.stats},'hd'); }
+function showHistDetail(item){ 
+  lastHistItem=item; 
+  document.getElementById('histDetailCard').style.display='block'; 
+  document.getElementById('hdTitle').textContent=item.speaker; 
+  document.getElementById('hdDate').textContent=item.date; 
+  renderReport({speaker:item.speaker, scores:item.scores, stats:item.stats}, 'hd'); 
+  document.getElementById('histDetailCard').scrollIntoView({behavior:'smooth'});
+}
 function closeHistDetail(){ document.getElementById('histDetailCard').style.display='none'; }
 
 initScorer();
