@@ -37,8 +37,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
 
 /* INPUTS & BUTTONS */
 label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem}
-input[type=text]{width:100%;padding:.7rem .95rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--ink);background:var(--paper);outline:none;transition:border-color .2s;margin-bottom:.9rem}
-input[type=text]:focus{border-color:var(--ink)}
+input[type=text], input[type=password]{width:100%;padding:.7rem .95rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--ink);background:var(--paper);outline:none;transition:border-color .2s;margin-bottom:.9rem}
+input[type=text]:focus, input[type=password]:focus{border-color:var(--ink)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;padding:.7rem 1.5rem;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%}
 .btn-primary{background:var(--ink);color:#fff}
 .btn-primary:hover:not(:disabled){background:#2d2d4a;}
@@ -55,14 +55,16 @@ input[type=text]:focus{border-color:var(--ink)}
 input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:var(--border);outline:none;margin:.9rem 0;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:transform .15s}
 
-/* CHECKLIST (Aşama 2) */
-.checklist-container { display:flex; flex-direction:column; gap:.5rem; margin-bottom:1.5rem; }
-.check-item { display:flex; align-items:center; justify-content:space-between; background:var(--paper); padding:.75rem 1rem; border-radius:10px; border:1px solid var(--border); }
-.check-item label { margin:0; color:var(--ink); font-weight:500; font-size:.88rem; text-transform:none; letter-spacing:normal; flex:1; cursor:pointer; }
-.toggle-btn { width:46px; height:26px; background:var(--muted); border-radius:13px; position:relative; cursor:pointer; transition:background .3s; flex-shrink:0; margin-left:15px; }
-.toggle-btn.active { background:var(--green); }
-.toggle-btn::after { content:''; position:absolute; top:3px; left:3px; width:20px; height:20px; background:#fff; border-radius:50%; transition:transform .3s; }
-.toggle-btn.active::after { transform:translateX(20px); }
+/* CHECKLIST (Aşama 2 - Evet/Hayır Radyo Butonları) */
+.checklist-container { display:flex; flex-direction:column; gap:.6rem; margin-bottom:1.5rem; }
+.check-item { display:flex; flex-direction:column; gap:.8rem; background:var(--paper); padding:1.2rem; border-radius:10px; border:1px solid var(--border); }
+@media(min-width: 550px) { .check-item { flex-direction:row; align-items:center; justify-content:space-between; } }
+.check-item label { margin:0; color:var(--ink); font-weight:500; font-size:.92rem; text-transform:none; letter-spacing:normal; flex:1; cursor:pointer; }
+.radio-group { display: flex; gap: 0.5rem; flex-shrink: 0; }
+.radio-btn { padding: 0.5rem 1.2rem; border-radius: 8px; border: 1.5px solid var(--border); font-size: 0.85rem; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.2s; background: #fff; text-align:center; flex:1; }
+.radio-btn:hover { border-color: var(--muted); }
+.radio-btn.yes.active { background: var(--green); border-color: var(--green); color: #fff; }
+.radio-btn.no.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 /* STATS & REPORTS */
 .success-msg{text-align:center;padding:1.8rem 1rem;display:none}
@@ -141,21 +143,18 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
       </div>
 
       <div id="scoringStep2" style="display:none">
-        <div class="card-sub">Aşama 2: Gözlemlediğiniz maddeleri işaretleyin. (Her Evet = 2 Puan)</div>
+        <div class="card-sub">Aşama 2: Gözlemlediğiniz maddeleri işaretleyin.</div>
         <div class="checklist-container" id="checklist">
           </div>
-        <div style="text-align:center; font-weight:bold; margin-bottom:1rem; color:var(--green)">
-          Kontrol Listesi Puanı: <span id="checkScoreDisplay">0</span> / 20
-        </div>
         <hr>
-        <button class="btn btn-success" id="submitBtn" onclick="submitScores()">✓ Puanları Gönder</button>
+        <button class="btn btn-success" id="submitBtn" onclick="submitScores()">✓ Değerlendirmeyi Gönder</button>
       </div>
 
       <div class="success-msg" id="successMsg">
         <div class="success-icon" id="successIcon">✅</div>
-        <h3 id="successTitle">Puanınız kaydedildi!</h3>
+        <h3 id="successTitle">Değerlendirme Alındı!</h3>
         <p id="successDetail"></p>
-        <p style="margin-top:.75rem;font-size:.82rem;color:var(--muted)">Sonraki oturum açılınca burada görünecek.</p>
+        <p style="margin-top:.75rem;font-size:.82rem;color:var(--muted)">Sonraki oturum açılınca ekran otomatik güncellenecek.</p>
       </div>
     </div>
   </div>
@@ -167,7 +166,7 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
     <div class="card-title">Öğretmen Girişi</div>
     <div class="card-sub">Panele erişmek için yönetici şifresini girin.</div>
     <label>Şifre</label>
-    <input type="password" id="teacherPass" placeholder="Şifreniz" style="width:100%;padding:.7rem;border-radius:10px;border:1.5px solid var(--border);margin-bottom:1rem" onkeydown="if(event.key==='Enter')loginTeacher()"/>
+    <input type="password" id="teacherPass" placeholder="Şifreniz" onkeydown="if(event.key==='Enter')loginTeacher()"/>
     <button class="btn btn-primary" onclick="loginTeacher()">Giriş Yap</button>
   </div>
 
@@ -228,7 +227,9 @@ hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 
 <script>
 // ══════════════════════════════════════════════════
-const API = "https://script.google.com/macros/s/AKfycbxBizcOb_8Uk04h7UYtnmGWeKchIhk5gTRHcLJsPT6FcqbDrBOeO_RSHz7mHzRSINMi/exec";
+// YENİ GAS API LİNKİNİZ EKLENDİ
+// ══════════════════════════════════════════════════
+const API = "https://script.google.com/macros/s/AKfycbzRhhOpD1zErfp_XAzEITghkU9HsXU6kiugO8pHPlWlAIgqPAxJX1eaPKexGTfoqkFB/exec";
 
 // KONTROL LİSTESİ MADDELERİ (İstediğiniz gibi değiştirebilirsiniz)
 const checklistItems = [
@@ -259,7 +260,15 @@ let tempScore1 = 0; // Holistik puanı geçici tutacağımız yer
 function showToast(msg, ms=2800){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),ms); }
 function showView(v){ document.querySelectorAll('.view').forEach(el=>el.classList.remove('active')); document.getElementById('view-'+v).classList.add('active'); document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',(i===0&&v==='scorer')||(i===1&&v==='teacher'))); }
 function setStatusBar(state,text){ const sb=document.getElementById('statusBar'); if(!state){sb.className='statusbar';return;} sb.className='statusbar visible '+state; sb.textContent=text; }
-async function api(params){ const qs = new URLSearchParams(params).toString(); const res = await fetch(API + '?' + qs, { method: 'GET', mode: 'cors' }); if(!res.ok) throw new Error('HTTP '+res.status); return res.json(); }
+
+// BAĞLANTI HATASINI ÇÖZEN GÜNCELLENMİŞ FETCH SORGUSU
+async function api(params){ 
+  const qs = new URLSearchParams(params).toString(); 
+  const res = await fetch(API + '?' + qs); 
+  if(!res.ok) throw new Error('HTTP '+res.status); 
+  return res.json(); 
+}
+
 function updateSlider(v){ const el=document.getElementById('scoreDisplay'); if(el){ el.textContent=v; el.style.color=(v/20)>.65?'#1a6640':(v/20)>.35?'#7a5a10':'#c8410a'; } }
 
 // ══ SCORER ══
@@ -268,18 +277,28 @@ function renderChecklist() {
   container.innerHTML = '';
   checklistItems.forEach((item, index) => {
     container.innerHTML += `
-      <div class="check-item" onclick="toggleCheck(this)">
-        <label>${item}</label>
-        <div class="toggle-btn" id="chk-${index}"></div>
+      <div class="check-item" id="item-${index}">
+        <label onclick="selectCheckRadio(${index}, 'yes')">${item}</label>
+        <div class="radio-group">
+          <div class="radio-btn yes" onclick="selectCheckRadio(${index}, 'yes')">Evet</div>
+          <div class="radio-btn no" onclick="selectCheckRadio(${index}, 'no')">Hayır</div>
+        </div>
       </div>`;
   });
 }
 
-function toggleCheck(itemDiv) {
-  const btn = itemDiv.querySelector('.toggle-btn');
-  btn.classList.toggle('active');
-  const activeCount = document.querySelectorAll('.checklist-container .toggle-btn.active').length;
-  document.getElementById('checkScoreDisplay').textContent = activeCount * 2;
+function selectCheckRadio(index, choice) {
+  const itemDiv = document.getElementById(`item-${index}`);
+  const yesBtn = itemDiv.querySelector('.radio-btn.yes');
+  const noBtn = itemDiv.querySelector('.radio-btn.no');
+  
+  if (choice === 'yes') {
+    yesBtn.classList.add('active');
+    noBtn.classList.remove('active');
+  } else {
+    noBtn.classList.add('active');
+    yesBtn.classList.remove('active');
+  }
 }
 
 function initScorer(){ if(myName){ document.getElementById('scorerLoginScreen').style.display='none'; document.getElementById('scorerMainScreen').style.display='block'; document.getElementById('scorerWelcomeName').textContent='Hoş geldin, '+myName+' 👋'; startScorerPoll(); } renderChecklist(); }
@@ -293,7 +312,7 @@ async function checkScorerStatus(){
       if(data.speaker !== currentSpeaker){ currentSpeaker=data.speaker; scorerVoted=false; openScoringUI(data.speaker); } 
       else if(scorerVoted){ showScorerVotedWait(); } 
       else { showScorerActiveCard(); }
-      setStatusBar('open','🟢 Aktif oturum — puanlama açık');
+      setStatusBar('open','🟢 Aktif oturum — değerlendirme açık');
     } else {
       if(currentSpeaker && !scorerVoted){ showScorerClosed(); }
       currentSpeaker=''; if(!scorerVoted) showScorerWait(); setStatusBar('waiting','⏳ Oturum bekleniyor…');
@@ -312,9 +331,8 @@ function openScoringUI(speaker){
   document.getElementById('scoringStep2').style.display='none';
   document.getElementById('successMsg').style.display='none';
   const slider=document.getElementById('scoreSlider'); if(slider) slider.value=10; updateSlider(10);
-  document.querySelectorAll('.checklist-container .toggle-btn').forEach(btn => btn.classList.remove('active'));
-  document.getElementById('checkScoreDisplay').textContent = '0';
-  const btn=document.getElementById('submitBtn'); if(btn){btn.disabled=false;btn.textContent='✓ Puanları Gönder';}
+  document.querySelectorAll('.checklist-container .radio-btn').forEach(btn => btn.classList.remove('active'));
+  const btn=document.getElementById('submitBtn'); if(btn){btn.disabled=false;btn.textContent='✓ Değerlendirmeyi Gönder';}
 }
 
 function goToStep2() {
@@ -328,27 +346,38 @@ function showScorerClosed(){
   document.getElementById('scoreDot').classList.add('off');
   document.getElementById('scoringStep1').style.display='none'; document.getElementById('scoringStep2').style.display='none';
   document.getElementById('successIcon').textContent='⛔'; document.getElementById('successTitle').textContent='Oturum kapandı';
-  document.getElementById('successDetail').textContent='Puan verme süresi doldu.'; document.getElementById('successMsg').style.display='block'; setStatusBar('closed','⛔ Oturum kapatıldı');
+  document.getElementById('successDetail').textContent='Değerlendirme süresi doldu.'; document.getElementById('successMsg').style.display='block'; setStatusBar('closed','⛔ Oturum kapatıldı');
 }
 function showScorerVotedWait(){ showScorerActiveCard(); document.getElementById('scoringStep1').style.display='none'; document.getElementById('scoringStep2').style.display='none'; document.getElementById('successMsg').style.display='block'; }
 
 async function submitScores(){
+  // Bütün maddelerin işaretlenip işaretlenmediğini kontrol et
+  const totalItems = document.querySelectorAll('.checklist-container .check-item').length;
+  const answeredItems = document.querySelectorAll('.checklist-container .radio-btn.active').length;
+  
+  if (answeredItems < totalItems) {
+    showToast("Lütfen tüm maddeleri (Evet/Hayır) işaretleyin.");
+    return;
+  }
+
   const s1 = tempScore1;
-  const activeCount = document.querySelectorAll('.checklist-container .toggle-btn.active').length;
+  const activeCount = document.querySelectorAll('.checklist-container .radio-btn.yes.active').length;
   const s2 = activeCount * 2;
   
   const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.innerHTML='<span class="spin"></span>Gönderiliyor…';
   scorerVoted=true;
-  document.getElementById('successDetail').innerHTML=`Holistik: <b>${s1}</b> &nbsp;|&nbsp; Kontrol Listesi: <b>${s2}</b>`;
-  document.getElementById('successIcon').textContent='✅'; document.getElementById('successTitle').textContent='Puanlar kaydedildi!';
+  
+  // Ekranda verilen puan gösterilmeyecek
+  document.getElementById('successDetail').innerHTML=`Değerlendirmeleriniz sisteme başarıyla işlendi.`;
+  document.getElementById('successIcon').textContent='✅'; document.getElementById('successTitle').textContent='Değerlendirme Alındı!';
   document.getElementById('scoringStep2').style.display='none'; document.getElementById('successMsg').style.display='block';
 
   try{
     const data=await api({action:'score', rater:myName, score1:s1, score2:s2});
     if(data.status!=='ok' && data.status!=='duplicate'){
-      scorerVoted=false; document.getElementById('scoringStep2').style.display='block'; document.getElementById('successMsg').style.display='none'; btn.disabled=false; btn.textContent='✓ Puanları Gönder'; showToast(data.message||"Hata oluştu.");
+      scorerVoted=false; document.getElementById('scoringStep2').style.display='block'; document.getElementById('successMsg').style.display='none'; btn.disabled=false; btn.textContent='✓ Değerlendirmeyi Gönder'; showToast(data.message||"Hata oluştu.");
     }
-  }catch(e){ scorerVoted=false; document.getElementById('scoringStep2').style.display='block'; document.getElementById('successMsg').style.display='none'; btn.disabled=false; btn.textContent='✓ Puanları Gönder'; showToast("Bağlantı hatası."); }
+  }catch(e){ scorerVoted=false; document.getElementById('scoringStep2').style.display='block'; document.getElementById('successMsg').style.display='none'; btn.disabled=false; btn.textContent='✓ Değerlendirmeyi Gönder'; showToast("Bağlantı hatası."); }
 }
 
 // ══ TEACHER ══
@@ -373,8 +402,8 @@ async function restoreTeacherSession(){
     if(data.session_active){
       activeStudentIdx = students.indexOf(data.speaker);
       document.getElementById('activeSessionInfo').style.display='block'; document.getElementById('activeSessionSpeaker').textContent=data.speaker;
-      document.getElementById('activeScoreCount').textContent = data.score_count===0 ? 'Henüz puan gelmedi.' : data.score_count+' puanlayıcı puan verdi.';
-      document.getElementById('teacherDot').classList.remove('off'); setStatusBar('open','🟢 Aktif oturum — puanlama açık');
+      document.getElementById('activeScoreCount').textContent = data.score_count===0 ? 'Henüz değerlendirme gelmedi.' : data.score_count+' değerlendirme geldi.';
+      document.getElementById('teacherDot').classList.remove('off'); setStatusBar('open','🟢 Aktif oturum — değerlendirme açık');
     } else { activeStudentIdx=-1; document.getElementById('activeSessionInfo').style.display='none'; setStatusBar(null); renderStudentList(); }
   }catch(e){}
 }
@@ -411,7 +440,7 @@ async function startSession(idx){
   const speaker=students[idx]; document.querySelectorAll('.row-actions .btn').forEach(b=>b.disabled=true);
   try{
     const data=await api({action:'start', speaker:speaker, pass:savedPass});
-    if(data.status==='ok'){ activeStudentIdx=idx; renderStudentList(); document.getElementById('activeSessionInfo').style.display='block'; document.getElementById('activeSessionSpeaker').textContent=speaker; document.getElementById('activeScoreCount').textContent='Bekleniyor...'; document.getElementById('reportCard').style.display='none'; document.getElementById('teacherDot').classList.remove('off'); setStatusBar('open','🟢 Aktif oturum — puanlama açık'); } 
+    if(data.status==='ok'){ activeStudentIdx=idx; renderStudentList(); document.getElementById('activeSessionInfo').style.display='block'; document.getElementById('activeSessionSpeaker').textContent=speaker; document.getElementById('activeScoreCount').textContent='Bekleniyor...'; document.getElementById('reportCard').style.display='none'; document.getElementById('teacherDot').classList.remove('off'); setStatusBar('open','🟢 Aktif oturum — değerlendirme açık'); } 
     else { showToast("Hata oluştu."); renderStudentList(); }
   }catch(e){ showToast("Bağlantı hatası!"); renderStudentList(); }
 }
@@ -421,7 +450,7 @@ async function closeSession(){
   try{
     const data=await api({action:'close', pass:savedPass});
     activeStudentIdx=-1; renderStudentList(); document.getElementById('activeSessionInfo').style.display='none'; document.getElementById('teacherDot').classList.add('off'); setStatusBar('closed','⛔ Oturum kapatıldı');
-    if(!data.scores||data.scores.length===0){ showToast("Hiç puan girilmedi!"); setStatusBar(null); } 
+    if(!data.scores||data.scores.length===0){ showToast("Hiç değerlendirme girilmedi!"); setStatusBar(null); } 
     else { renderReport(data,'r'); document.getElementById('reportCard').style.display='block'; }
     loadHistory();
   }catch(e){ showToast("Hata!"); btn.disabled=false; btn.textContent='■ Oturumu Kapat'; }
@@ -435,8 +464,8 @@ function startTeacherPoll(){
       if(data.students && JSON.stringify(students) !== JSON.stringify(data.students)) { students = data.students; renderStudentList(); }
       if(activeStudentIdx===-1) return;
       if(data.session_active){
-        const n=data.score_count; const txt=n===0?'Bekleniyor...':n+' kişi puanladı.';
-        document.getElementById('activeScoreCount').textContent=txt; const sc=document.getElementById('scount-'+activeStudentIdx); if(sc&&n>0) sc.textContent=n+' puan';
+        const n=data.score_count; const txt=n===0?'Bekleniyor...':n+' kişi değerlendirdi.';
+        document.getElementById('activeScoreCount').textContent=txt; const sc=document.getElementById('scount-'+activeStudentIdx); if(sc&&n>0) sc.textContent=n+' evrak';
       }
     }catch(e){}
   },2000);
