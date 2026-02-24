@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Öğretmen Adayı Puanlama Sistemi</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a2e; --paper: #f5f0e8; --accent: #c8410a;
+  --green: #2d6a4f; --muted: #7a7a8a; --border: #d9d2c4;
+  --card: #fff; --shadow: 0 2px 20px rgba(26,26,46,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
+
+/* NAV */
+.nav{background:var(--ink);color:#fff;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav-brand{font-family:'DM Serif Display',serif;font-size:1.15rem}
+.nav-tabs{display:flex;gap:.2rem}
+.nav-tab{padding:.4rem 1rem;border-radius:6px;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s}
+.nav-tab.active,.nav-tab:hover{background:rgba(255,255,255,.14);color:#fff}
+
+/* STATUS */
+.statusbar{text-align:center;padding:.4rem 1rem;font-size:.82rem;font-weight:500;display:none}
+.statusbar.visible{display:block}
+.statusbar.open{background:var(--green);color:#fff}
+.statusbar.closed{background:var(--accent);color:#fff}
+.statusbar.waiting{background:#777;color:#fff}
+
+/* VIEWS */
+.view{display:none;padding:2rem 1.25rem;max-width:700px;margin:0 auto}
+.view.active{display:block}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.75rem;box-shadow:var(--shadow);margin-bottom:1.25rem}
+.card-title{font-family:'DM Serif Display',serif;font-size:1.4rem;margin-bottom:.25rem}
+.card-sub{color:var(--muted);font-size:.85rem;margin-bottom:1.4rem}
+
+/* INPUTS */
+label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem}
+input[type=text]{width:100%;padding:.7rem .95rem;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--ink);background:var(--paper);outline:none;transition:border-color .2s;margin-bottom:.9rem}
+input[type=text]:focus{border-color:var(--ink)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;padding:.7rem 1.5rem;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%}
+.btn-primary{background:var(--ink);color:#fff}
+.btn-primary:hover:not(:disabled){background:#2d2d4a;transform:translateY(-1px)}
+.btn-danger{background:var(--accent);color:#fff}
+.btn-danger:hover:not(:disabled){background:#a83408;transform:translateY(-1px)}
+.btn-success{background:var(--green);color:#fff}
+.btn-success:hover:not(:disabled){opacity:.88;transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--border)}
+.btn-outline:hover:not(:disabled){border-color:var(--ink)}
+.btn-sm{padding:.45rem 1rem;font-size:.82rem;width:auto}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-row{display:flex;gap:.6rem}
+.btn-row .btn{flex:1}
+
+/* SLIDER */
+.score-display{text-align:center;margin:1rem 0 .4rem}
+.score-big{font-family:'DM Serif Display',serif;font-size:5rem;line-height:1;transition:color .2s}
+.score-range{color:var(--muted);font-size:.8rem;margin-top:.2rem}
+input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:var(--border);outline:none;margin:.9rem 0;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:transform .15s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12)}
+.score-labels{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted)}
+
+/* SUCCESS */
+.success-msg{text-align:center;padding:1.8rem 1rem;display:none}
+.success-icon{font-size:3.2rem;margin-bottom:.6rem}
+.success-msg h3{font-family:'DM Serif Display',serif;font-size:1.35rem;margin-bottom:.4rem}
+.success-msg p{color:var(--muted);font-size:.9rem}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem;margin:1rem 0}
+.stat-box{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center}
+.stat-label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.25rem}
+.stat-value{font-family:'DM Serif Display',serif;font-size:2.1rem;color:var(--ink)}
+.stat-value.hi{color:var(--accent)}
+
+/* SCORE LIST */
+.list-title{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:1rem 0 .5rem}
+.score-item{display:flex;align-items:center;padding:.45rem .7rem;border-radius:8px;font-size:.88rem;margin-bottom:.28rem;background:var(--paper)}
+.si-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-wrap{width:80px;background:var(--border);border-radius:4px;height:5px;margin:0 .7rem;flex-shrink:0}
+.bar-fill{height:100%;border-radius:4px;background:var(--green)}
+.si-val{font-weight:600;font-size:.85rem;white-space:nowrap}
+
+/* BADGE */
+.sbadge{display:inline-flex;align-items:center;gap:.4rem;background:var(--paper);border:1px solid var(--border);border-radius:8px;padding:.3rem .75rem;font-size:.8rem;color:var(--muted);margin-bottom:.9rem}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+.dot.off{background:var(--muted);animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* STUDENT LIST — Teacher */
+.student-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem .85rem;border-radius:10px;border:1px solid var(--border);margin-bottom:.5rem;background:var(--paper);transition:box-shadow .2s}
+.student-row.active-session{border-color:var(--green);background:#f0faf5;box-shadow:0 0 0 2px rgba(45,106,79,.15)}
+.student-name{font-weight:500;font-size:.95rem;flex:1}
+.student-count{font-size:.8rem;color:var(--muted);margin:0 .75rem}
+.row-actions{display:flex;gap:.4rem}
+
+/* HISTORY */
+.history-item{border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-bottom:.75rem;cursor:pointer;transition:box-shadow .2s}
+.history-item:hover{box-shadow:var(--shadow)}
+.hi-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.3rem}
+.hi-name{font-weight:600;font-size:.95rem}
+.hi-date{font-size:.75rem;color:var(--muted)}
+.hi-stats{font-size:.8rem;color:var(--muted)}
+.hi-stats span{margin-right:.8rem}
+
+hr{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
+
+/* SPINNER */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;vertical-align:middle;margin-right:.35rem}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:.65rem 1.3rem;border-radius:10px;font-size:.85rem;font-weight:500;transition:transform .3s ease;z-index:9999;white-space:nowrap;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* WAITING */
+.waiting-msg{text-align:center;padding:1.5rem 0;color:var(--muted);font-size:.9rem}
+.dots::after{content:'';animation:dots 1.5s infinite}
+@keyframes dots{0%{content:''}33%{content:'.'}66%{content:'..'}100%{content:'...'}}
+
+/* Puanlayıcı bekleme ekranı */
+.waiting-screen{text-align:center;padding:2.5rem 1rem}
+.waiting-screen .big-icon{font-size:3rem;margin-bottom:1rem}
+.waiting-screen h3{font-family:'DM Serif Display',serif;font-size:1.4rem;margin-bottom:.5rem}
+.waiting-screen p{color:var(--muted);font-size:.88rem}
+
+/* Oturum kartı (puanlayıcı için) */
+.session-ready{background:#f0faf5;border:1.5px solid var(--green);border-radius:14px;padding:1.25rem;margin-bottom:1rem;display:none}
+.session-ready h4{font-weight:600;margin-bottom:.3rem}
+.session-ready p{font-size:.85rem;color:var(--muted)}
+
+@media(max-width:440px){
+  .score-big{font-size:4rem}
+  .bar-wrap{width:50px}
+  .row-actions .btn{font-size:.75rem;padding:.4rem .7rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">📋 Puanlama Sistemi</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showView('scorer')">Puanlayıcı</button>
+    <button class="nav-tab" onclick="showView('teacher')">Öğretmen</button>
+  </div>
+</nav>
+<div class="statusbar" id="statusBar"></div>
+
+<!-- ════════════════ PUANLAYICI ════════════════ -->
+<div class="view active" id="view-scorer">
+
+  <!-- 1. Giriş — sadece bir kere -->
+  <div id="scorerLoginScreen">
+    <div class="card">
+      <div class="card-title">Hoş geldiniz</div>
+      <div class="card-sub">Adınızı girerek sisteme katılın. Bir kez girmeniz yeterli — öğretmen her oturum açtığında otomatik puanlayabilirsiniz.</div>
+      <label>Adınız ve Soyadınız</label>
+      <input type="text" id="scorerName" placeholder="Örn: Ahmet Yılmaz" onkeydown="if(event.key==='Enter')loginScorer()"/>
+      <button class="btn btn-primary" id="joinBtn" onclick="loginScorer()">Sisteme Gir →</button>
+      <div id="scorerLoginMsg" style="margin-top:.8rem;font-size:.82rem;color:var(--muted);text-align:center;min-height:1.2rem"></div>
+    </div>
+  </div>
+
+  <!-- 2. Ana ekran (giriş sonrası kalıcı) -->
+  <div id="scorerMainScreen" style="display:none">
+
+    <!-- Bekleme durumu -->
+    <div class="card" id="scorerWaitCard">
+      <div class="waiting-screen">
+        <div class="big-icon">⏳</div>
+        <h3>Oturum Bekleniyor</h3>
+        <p>Öğretmen bir aday için oturum açtığında<br>burada otomatik görünecek.</p>
+        <p style="margin-top:.75rem;font-size:.8rem;color:var(--muted)" id="scorerWelcomeName"></p>
+      </div>
+    </div>
+
+    <!-- Aktif oturum — puanlama -->
+    <div class="card" id="scorerActiveCard" style="display:none">
+      <div class="sbadge"><div class="dot" id="scoreDot"></div><span id="scoreBadgeTxt">Oturum açık</span></div>
+      <div class="card-title" id="scorerSpeakerTitle">—</div>
+      <div class="card-sub">Konuşan adayı 0-20 arasında puanlayın.</div>
+
+      <div id="scoringForm">
+        <div class="score-display">
+          <div class="score-big" id="scoreDisplay">10</div>
+          <div class="score-range">0 – 20 arasında puan</div>
+        </div>
+        <input type="range" min="0" max="20" value="10" id="scoreSlider" oninput="updateSlider(this.value)">
+        <div class="score-labels"><span>0</span><span>5</span><span>10</span><span>15</span><span>20</span></div>
+        <hr>
+        <button class="btn btn-success" id="submitBtn" onclick="submitScore()">✓ Puanı Gönder</button>
+      </div>
+
+      <div class="success-msg" id="successMsg">
+        <div class="success-icon" id="successIcon">✅</div>
+        <h3 id="successTitle">Puanınız kaydedildi!</h3>
+        <p id="successDetail"></p>
+        <p style="margin-top:.75rem;font-size:.82rem;color:var(--muted)">Sonraki oturum açılınca burada görünecek.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════ ÖĞRETMEN ════════════════ -->
+<div class="view" id="view-teacher">
+
+  <div class="card" id="teacherLoginCard">
+    <div class="card-title">Öğretmen Girişi</div>
+    <div class="card-sub">Panele erişmek için şifreyi girin.</div>
+    <label>Şifre</label>
+    <input type="text" id="teacherPass" placeholder="Şifreniz" onkeydown="if(event.key==='Enter')loginTeacher()"/>
+    <button class="btn btn-primary" onclick="loginTeacher()">Giriş Yap</button>
+  </div>
+
+  <div id="teacherPanel" style="display:none">
+
+    <!-- Öğrenci Listesi & Oturum Yönetimi -->
+    <div class="card">
+      <div class="card-title">Oturum Yönetimi</div>
+      <div class="card-sub">Konuşacak adayı seçip oturumu açın. Bitince kapatın, rapor otomatik gelir.</div>
+
+      <!-- Yeni öğrenci ekle -->
+      <div style="display:flex;gap:.5rem;margin-bottom:1rem">
+        <input type="text" id="newStudentName" placeholder="Aday adı soyadı ekle…" style="margin-bottom:0;flex:1" onkeydown="if(event.key==='Enter')addStudent()"/>
+        <button class="btn btn-outline btn-sm" onclick="addStudent()" style="width:auto;white-space:nowrap">+ Ekle</button>
+      </div>
+
+      <div id="studentList">
+        <div class="waiting-msg">Henüz aday eklenmedi.</div>
+      </div>
+    </div>
+
+    <!-- Aktif oturum bilgisi -->
+    <div class="card" id="activeSessionInfo" style="display:none">
+      <div class="sbadge"><div class="dot" id="teacherDot"></div><span id="teacherBadgeTxt">Oturum aktif</span></div>
+      <div class="card-title" id="activeSessionSpeaker">—</div>
+      <div id="activeScoreCount" style="color:var(--muted);font-size:.88rem;margin-bottom:1rem">Henüz puan gelmedi.</div>
+      <button class="btn btn-danger" id="closeBtn" onclick="closeSession()">■ Oturumu Kapat ve Raporu Göster</button>
+    </div>
+
+    <!-- Rapor -->
+    <div class="card" id="reportCard" style="display:none">
+      <div class="card-title">📊 Puanlama Raporu</div>
+      <div class="card-sub" id="reportSpeaker"></div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-label">Ortalama</div><div class="stat-value hi" id="rMean">—</div></div>
+        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="rStd">—</div></div>
+        <div class="stat-box"><div class="stat-label">En Düşük</div><div class="stat-value" id="rMin">—</div></div>
+        <div class="stat-box"><div class="stat-label">En Yüksek</div><div class="stat-value" id="rMax">—</div></div>
+      </div>
+      <div class="list-title">Bireysel Puanlar — <span id="rCount">0</span> puanlayıcı</div>
+      <div id="rList"></div>
+      <hr>
+      <button class="btn btn-outline" onclick="copyReport()">📋 Raporu Kopyala</button>
+    </div>
+
+    <!-- Geçmiş -->
+    <div class="card">
+      <div class="card-title">Geçmiş Oturumlar</div>
+      <div class="card-sub">Tamamlanan tüm puanlama oturumları.</div>
+      <div id="historyList"><div class="waiting-msg">Yükleniyor<span class="dots"></span></div></div>
+    </div>
+
+    <!-- Geçmiş Detay -->
+    <div class="card" id="histDetailCard" style="display:none">
+      <button class="btn btn-outline" style="margin-bottom:1rem" onclick="closeHistDetail()">← Geri</button>
+      <div class="card-title" id="hdTitle"></div>
+      <div class="card-sub"  id="hdDate"></div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-label">Ortalama</div><div class="stat-value hi" id="hdMean">—</div></div>
+        <div class="stat-box"><div class="stat-label">Std. Sapma</div><div class="stat-value" id="hdStd">—</div></div>
+        <div class="stat-box"><div class="stat-label">En Düşük</div><div class="stat-value" id="hdMin">—</div></div>
+        <div class="stat-box"><div class="stat-label">En Yüksek</div><div class="stat-value" id="hdMax">—</div></div>
+      </div>
+      <div class="list-title">Bireysel Puanlar — <span id="hdCount">0</span> puanlayıcı</div>
+      <div id="hdList"></div>
+      <hr>
+      <button class="btn btn-outline" onclick="copyHistReport()">📋 Raporu Kopyala</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════
+// CONFIG
+// Netlify proxy üzerinden gider → CORS sorunu olmaz
+// ══════════════════════════════════════════════════
+const API = "/api/gas";   // Netlify _redirects proxy
+const TEACHER_PASS = "ogretmen2024";
+
+// ══ STATE ══
+let myName        = localStorage.getItem("scorerName") || "";
+let scorerVoted   = false;
+let currentSpeaker = "";
+let scorerPollId  = null;
+let teacherPollId = null;
+let lastReport    = null;
+let lastHistItem  = null;
+let students      = JSON.parse(localStorage.getItem("studentList") || "[]");
+let activeStudentIdx = -1;
+
+// ══ UTILS ══
+function showToast(msg, ms=2800){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),ms);
+}
+function showView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach((el,i)=>
+    el.classList.toggle('active',(i===0&&v==='scorer')||(i===1&&v==='teacher')));
+}
+function setStatusBar(state,text){
+  const sb=document.getElementById('statusBar');
+  if(!state){sb.className='statusbar';return;}
+  sb.className='statusbar visible '+state; sb.textContent=text;
+}
+async function api(params){
+  const qs=Object.keys(params).map(k=>encodeURIComponent(k)+'='+encodeURIComponent(params[k])).join('&');
+  const res=await fetch(API+'?'+qs,{redirect:'follow'});
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  return res.json();
+}
+function updateSlider(v){
+  const el=document.getElementById('scoreDisplay');
+  if(!el) return;
+  el.textContent=v;
+  const pct=v/20;
+  el.style.color=pct>.65?'#1a6640':pct>.35?'#7a5a10':'#c8410a';
+}
+
+// ══ SCORER INIT ══════════════════════════════════
+function initScorer(){
+  if(myName){
+    // Daha önce giriş yapmış
+    document.getElementById('scorerLoginScreen').style.display='none';
+    document.getElementById('scorerMainScreen').style.display='block';
+    document.getElementById('scorerWelcomeName').textContent='Hoş geldin, '+myName+' 👋';
+    startScorerPoll();
+  }
+  // yoksa giriş ekranı zaten görünür
+}
+
+function loginScorer(){
+  const name=document.getElementById('scorerName').value.trim();
+  if(!name){showToast("Lütfen adınızı girin.");return;}
+  myName=name;
+  localStorage.setItem("scorerName",name);
+  document.getElementById('scorerLoginScreen').style.display='none';
+  document.getElementById('scorerMainScreen').style.display='block';
+  document.getElementById('scorerWelcomeName').textContent='Hoş geldin, '+myName+' 👋';
+  startScorerPoll();
+}
+
+// ══ SCORER POLL ══════════════════════════════════
+// Her 4 sn'de oturum durumunu kontrol et
+function startScorerPoll(){
+  if(scorerPollId) clearInterval(scorerPollId);
+  checkScorerStatus(); // hemen bir kere
+  scorerPollId=setInterval(checkScorerStatus,4000);
+}
+
+async function checkScorerStatus(){
+  try{
+    const data=await api({action:'status'});
+    if(data.session_active){
+      // Yeni oturum açıldıysa veya farklı bir adaysa
+      if(data.speaker !== currentSpeaker){
+        currentSpeaker=data.speaker;
+        scorerVoted=false;
+        openScoringUI(data.speaker);
+      } else if(!scorerVoted){
+        // Aynı oturum, henüz oy vermedi — form görünür kalsın
+        showScorerActiveCard();
+      }
+      setStatusBar('open','🟢 Aktif oturum — puanlama açık');
+    } else {
+      // Oturum kapalı
+      if(currentSpeaker){
+        // Az önce kapandı
+        if(!scorerVoted){
+          showScorerClosed();
+        }
+        // Bir sonraki oturum için sıfırla
+        setTimeout(()=>{
+          currentSpeaker='';
+          scorerVoted=false;
+          showScorerWait();
+        },5000);
+      } else {
+        showScorerWait();
+      }
+      setStatusBar('waiting','⏳ Oturum bekleniyor…');
+    }
+  }catch(e){}
+}
+
+function showScorerWait(){
+  document.getElementById('scorerWaitCard').style.display='block';
+  document.getElementById('scorerActiveCard').style.display='none';
+}
+function showScorerActiveCard(){
+  document.getElementById('scorerWaitCard').style.display='none';
+  document.getElementById('scorerActiveCard').style.display='block';
+}
+function openScoringUI(speaker){
+  showScorerActiveCard();
+  document.getElementById('scoreDot').classList.remove('off');
+  document.getElementById('scoreBadgeTxt').textContent='Oturum açık';
+  document.getElementById('scorerSpeakerTitle').textContent=speaker;
+  // Formu sıfırla
+  document.getElementById('scoringForm').style.display='block';
+  document.getElementById('successMsg').style.display='none';
+  const slider=document.getElementById('scoreSlider');
+  if(slider) slider.value=10;
+  updateSlider(10);
+  const btn=document.getElementById('submitBtn');
+  if(btn){btn.disabled=false;btn.textContent='✓ Puanı Gönder';}
+}
+function showScorerClosed(){
+  document.getElementById('scoreDot').classList.add('off');
+  document.getElementById('scoreBadgeTxt').textContent='Oturum kapatıldı';
+  document.getElementById('scoringForm').style.display='none';
+  document.getElementById('successIcon').textContent='⛔';
+  document.getElementById('successTitle').textContent='Oturum kapandı';
+  document.getElementById('successDetail').textContent='Puan verme süresi doldu.';
+  document.getElementById('successMsg').style.display='block';
+  setStatusBar('closed','⛔ Oturum kapatıldı');
+}
+
+async function submitScore(){
+  const slider=document.getElementById('scoreSlider');
+  if(!slider) return;
+  const score=parseInt(slider.value);
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>Gönderiliyor…';
+  try{
+    const data=await api({action:'score',rater:myName,score:score});
+    if(data.status==='ok'){
+      scorerVoted=true;
+      document.getElementById('successDetail').textContent=score+'/20 puanınız kaydedildi.';
+      document.getElementById('successIcon').textContent='✅';
+      document.getElementById('successTitle').textContent='Puanınız kaydedildi!';
+      document.getElementById('scoringForm').style.display='none';
+      document.getElementById('successMsg').style.display='block';
+      document.getElementById('scoreBadgeTxt').textContent='Puanınız gönderildi ✓';
+    } else if(data.status==='duplicate'){
+      showToast("Bu oturum için zaten puan verdiniz.");
+      btn.disabled=false; btn.textContent='✓ Puanı Gönder';
+    } else {
+      showToast(data.message||"Hata oluştu.");
+      btn.disabled=false; btn.textContent='✓ Puanı Gönder';
+    }
+  }catch(e){
+    showToast("Bağlantı hatası, tekrar deneyin.");
+    btn.disabled=false; btn.textContent='✓ Puanı Gönder';
+  }
+}
+
+// ══ TEACHER ══════════════════════════════════════
+function loginTeacher(){
+  const pass=document.getElementById('teacherPass').value.trim();
+  if(pass!==TEACHER_PASS){showToast("Şifre yanlış!");return;}
+  document.getElementById('teacherLoginCard').style.display='none';
+  document.getElementById('teacherPanel').style.display='block';
+  renderStudentList();
+  loadHistory();
+  startTeacherPoll();
+}
+
+// ── Öğrenci Listesi ──
+function saveStudents(){ localStorage.setItem("studentList",JSON.stringify(students)); }
+
+function addStudent(){
+  const inp=document.getElementById('newStudentName');
+  const name=inp.value.trim();
+  if(!name){showToast("Ad girin.");return;}
+  if(students.includes(name)){showToast("Bu aday zaten listede.");return;}
+  students.push(name);
+  saveStudents();
+  inp.value='';
+  renderStudentList();
+}
+
+function removeStudent(i){
+  if(activeStudentIdx===i){showToast("Aktif oturumu önce kapatın.");return;}
+  students.splice(i,1);
+  if(activeStudentIdx>i) activeStudentIdx--;
+  saveStudents();
+  renderStudentList();
+}
+
+function renderStudentList(){
+  const el=document.getElementById('studentList');
+  if(!students.length){
+    el.innerHTML='<div class="waiting-msg">Henüz aday eklenmedi. Yukarıdan ekleyin.</div>';
+    return;
+  }
+  el.innerHTML='';
+  students.forEach((name,i)=>{
+    const isActive=(activeStudentIdx===i);
+    el.innerHTML+=`
+      <div class="student-row ${isActive?'active-session':''}">
+        <span class="student-name">${isActive?'🟢 ':''} ${name}</span>
+        <span class="student-count" id="scount-${i}"></span>
+        <div class="row-actions">
+          ${isActive
+            ? `<button class="btn btn-danger btn-sm" onclick="closeSession()">Kapat</button>`
+            : `<button class="btn btn-success btn-sm" onclick="startSession(${i})" ${activeStudentIdx!==-1?'disabled':''}>Oturum Aç</button>
+               <button class="btn btn-outline btn-sm" onclick="removeStudent(${i})" ${activeStudentIdx!==-1?'disabled':''}>✕</button>`
+          }
+        </div>
+      </div>`;
+  });
+}
+
+// ── Oturum Aç ──
+async function startSession(idx){
+  const speaker=students[idx];
+  const btn=document.querySelectorAll('.row-actions .btn')[idx*2];
+  // Tüm aç butonlarını geçici devre dışı bırak
+  document.querySelectorAll('.row-actions .btn').forEach(b=>b.disabled=true);
+
+  try{
+    const data=await api({action:'start',speaker});
+    if(data.status==='ok'){
+      activeStudentIdx=idx;
+      renderStudentList();
+      document.getElementById('activeSessionInfo').style.display='block';
+      document.getElementById('activeSessionSpeaker').textContent=speaker;
+      document.getElementById('activeScoreCount').textContent='Henüz puan gelmedi.';
+      document.getElementById('reportCard').style.display='none';
+      document.getElementById('teacherDot').classList.remove('off');
+      setStatusBar('open','🟢 Aktif oturum — puanlama açık');
+      showToast('"'+speaker+'" için oturum başlatıldı.');
+    } else {
+      showToast(data.message||"Hata oluştu.");
+      renderStudentList();
+    }
+  }catch(e){
+    showToast("Bağlantı hatası!");
+    renderStudentList();
+  }
+}
+
+// ── Oturum Kapat ──
+async function closeSession(){
+  const btn=document.getElementById('closeBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>Kapatılıyor…';
+  try{
+    const data=await api({action:'close'});
+    activeStudentIdx=-1;
+    renderStudentList();
+    document.getElementById('activeSessionInfo').style.display='none';
+    document.getElementById('teacherDot').classList.add('off');
+    setStatusBar('closed','⛔ Oturum kapatıldı');
+
+    if(!data.scores||data.scores.length===0){
+      showToast("Hiç puan girilmedi!");
+      setStatusBar(null);
+    } else {
+      renderReport(data,'r');
+      document.getElementById('reportCard').style.display='block';
+    }
+    loadHistory();
+  }catch(e){
+    showToast("Bağlantı hatası!");
+    btn.disabled=false; btn.textContent='■ Oturumu Kapat ve Raporu Göster';
+  }
+}
+
+// ── Teacher Poll (puan sayısı) ──
+function startTeacherPoll(){
+  if(teacherPollId) clearInterval(teacherPollId);
+  teacherPollId=setInterval(async()=>{
+    if(activeStudentIdx===-1) return;
+    try{
+      const data=await api({action:'status'});
+      if(data.session_active){
+        const n=data.score_count;
+        const txt=n===0?'Henüz puan gelmedi.':n+' puanlayıcı puan verdi.';
+        document.getElementById('activeScoreCount').textContent=txt;
+        // Listede de göster
+        const sc=document.getElementById('scount-'+activeStudentIdx);
+        if(sc&&n>0) sc.textContent=n+' puan';
+      }
+    }catch(e){}
+  },4000);
+}
+
+// ══ RAPOR ════════════════════════════════════════
+function renderReport(data,prefix){
+  const{speaker,scores,stats}=data;
+  lastReport=data;
+  document.getElementById(prefix+'Mean').textContent=stats.mean;
+  document.getElementById(prefix+'Std').textContent=stats.std;
+  document.getElementById(prefix+'Min').textContent=stats.min;
+  document.getElementById(prefix+'Max').textContent=stats.max;
+  document.getElementById(prefix+'Count').textContent=stats.n;
+  if(prefix==='r') document.getElementById('reportSpeaker').textContent='Konuşan Aday: '+speaker;
+  const list=document.getElementById(prefix+'List');
+  list.innerHTML='';
+  [...scores].sort((a,b)=>b.score-a.score).forEach(s=>{
+    const pct=Math.round(s.score/20*100);
+    list.innerHTML+=`<div class="score-item">
+      <span class="si-name">${s.name}</span>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <span class="si-val">${s.score}/20</span>
+    </div>`;
+  });
+}
+
+function copyReport(d){
+  d=d||lastReport; if(!d) return;
+  const lines=[
+    'PUANLAMA RAPORU — '+d.speaker,
+    'Tarih: '+new Date().toLocaleString('tr-TR'),
+    'Puanlayıcı Sayısı: '+d.stats.n,
+    'Ortalama: '+d.stats.mean,
+    'Standart Sapma: '+d.stats.std,
+    'En Düşük: '+d.stats.min,
+    'En Yüksek: '+d.stats.max,
+    '',
+    'Bireysel Puanlar:',
+    ...[...d.scores].sort((a,b)=>b.score-a.score).map(s=>'  '+s.name+': '+s.score+'/20')
+  ];
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>showToast("Rapor kopyalandı!"));
+}
+
+// ══ GEÇMİŞ ═══════════════════════════════════════
+async function loadHistory(){
+  const el=document.getElementById('historyList');
+  el.innerHTML='<div class="waiting-msg">Yükleniyor<span class="dots"></span></div>';
+  try{
+    const data=await api({action:'history'});
+    if(!data.history||data.history.length===0){
+      el.innerHTML='<div class="waiting-msg">Henüz tamamlanmış oturum yok.</div>'; return;
+    }
+    el.innerHTML='';
+    data.history.forEach(item=>{
+      const s=item.stats;
+      el.innerHTML+=`<div class="history-item" onclick='showHistDetail(${JSON.stringify(item).replace(/'/g,"&#39;")})'>
+        <div class="hi-header"><div class="hi-name">${item.speaker}</div><div class="hi-date">${item.date}</div></div>
+        <div class="hi-stats">
+          <span>👥 ${s.n}</span><span>⌀ ${s.mean}</span><span>↕ ${s.min}–${s.max}</span><span>σ ${s.std}</span>
+        </div>
+      </div>`;
+    });
+  }catch(e){
+    el.innerHTML='<div class="waiting-msg">Geçmiş yüklenemedi.</div>';
+  }
+}
+
+function showHistDetail(item){
+  lastHistItem=item;
+  document.getElementById('histDetailCard').style.display='block';
+  document.getElementById('histDetailCard').scrollIntoView({behavior:'smooth'});
+  document.getElementById('hdTitle').textContent=item.speaker;
+  document.getElementById('hdDate').textContent=item.date;
+  renderReport({speaker:item.speaker,scores:item.scores,stats:item.stats},'hd');
+}
+function closeHistDetail(){
+  document.getElementById('histDetailCard').style.display='none';
+}
+function copyHistReport(){
+  if(lastHistItem) copyReport({speaker:lastHistItem.speaker,scores:lastHistItem.scores,stats:lastHistItem.stats});
+}
+
+// ══ INIT ══════════════════════════════════════════
+updateSlider(10);
+initScorer();
+</script>
+</body>
+</html>
